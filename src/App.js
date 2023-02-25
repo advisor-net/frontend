@@ -12,7 +12,7 @@ import {
 import ColorModeSwitcher from './ColorModeSwitcher';
 import { Logo } from './Logo';
 
-const App = () => {
+function App() {
   return (
     <ChakraProvider theme={theme}>
       <Box textAlign="center" fontSize="xl">
@@ -21,7 +21,7 @@ const App = () => {
           <VStack spacing={8}>
             <Logo h="40vmin" pointerEvents="none" />
             <Text>
-              Edit - trying to get linters to run
+              Edit
               {' '}
               <Code fontSize="xl">src/App.js</Code>
               {' '}

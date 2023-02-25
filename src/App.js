@@ -21,7 +21,7 @@ const App = () => {
           <VStack spacing={8}>
             <Logo h="40vmin" pointerEvents="none" />
             <Text>
-              Edit
+              Edit - trying to get linters to run
               {' '}
               <Code fontSize="xl">src/App.js</Code>
               {' '}

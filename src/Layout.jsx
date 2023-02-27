@@ -17,6 +17,10 @@ import Logo from './Logo';
 const Layout = () => {
   const auth = useAuth();
   const navigate = useNavigate();
+  
+  const activeStyle = {
+    textDecoration: "underline",
+  };
 
   return (
     <>
@@ -32,16 +36,16 @@ const Layout = () => {
               >
                 <NavLink 
                   to={'/profile'}
-                  className={({ isActive }) =>
-                    isActive ? "underline" : undefined
+                  style={({ isActive }) =>
+                    isActive ? activeStyle : undefined
                   }
                 >
                   Profile
                 </NavLink>
                 <NavLink 
                   to={'/network'}
-                  className={({ isActive }) =>
-                    isActive ? "underline" : undefined
+                  style={({ isActive }) =>
+                    isActive ? activeStyle : undefined
                   }
                 >
                   Network

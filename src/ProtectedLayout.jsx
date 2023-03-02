@@ -18,7 +18,6 @@ import { removeJwtToken, removeRefreshToken, removeUserUuid } from './utils/sess
 
 const ProtectedLayout = () => {
   const navigate = useNavigate();
-  console.log('in the protected layout code')
   
   const activeStyle = {
     textDecoration: "underline",

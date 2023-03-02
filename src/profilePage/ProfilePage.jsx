@@ -1,14 +1,21 @@
 import { Suspense } from 'react';
 
-import { Text } from '@chakra-ui/react';
+import { Text, Heading, Box } from '@chakra-ui/react';
 
 import { useLoaderData, useAsyncValue, Await } from 'react-router-dom';
 
+// ToDo: actually build out the page
 const ProfilePageComponent = () => {
-  const loadedData = useAsyncValue();
-
+  const { user, isOwnProfile } = useAsyncValue();
+  
   return (
-    <Text>Here is the profile page</Text>
+    <Box>
+      {isOwnProfile ? <Heading>Own profile</Heading> : <Heading>Other profile</Heading>}
+      {Object.entries(user).map(([key, value]) => (
+        <Text key={key}>{`${key}: ${value}`}</Text>
+      ))}
+    </Box>
+    
   )
 };
 

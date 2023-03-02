@@ -15,7 +15,7 @@ const loadProfile = async ({ params }) => {
 
   try {
     const response = await profileService.getUserDetails(params.uuid);
-    return response;
+    return { user: response, isOwnProfile: loggedInUuid === params.uuid };
   } catch (error) {
     console.error(error);
     return {};

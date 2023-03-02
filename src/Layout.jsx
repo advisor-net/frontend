@@ -43,7 +43,7 @@ const Layout = () => {
                   Profile
                 </NavLink>
                 <NavLink 
-                  to={'/network'}
+                  to={'/n'}
                   style={({ isActive }) =>
                     isActive ? activeStyle : undefined
                   }

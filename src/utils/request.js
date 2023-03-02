@@ -1,6 +1,6 @@
 import { redirect } from 'react-router-dom';
 import { keysToCamelCaseDeep, keysToSnakeCaseDeep } from './utils';
-import { getJwtToken, getRefreshToken, setJwtToken } from './token';
+import { getJwtToken, getRefreshToken, setJwtToken } from './session';
 
 const isObject = (a) => typeof a === 'object' && a !== null;
 

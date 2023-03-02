@@ -30,7 +30,7 @@ const router = createBrowserRouter(
       />
       <Route path="/login" element={<LoginPage />} errorElement={<ErrorPage/>} />
       <Route
-        path="/profile"
+        path="/profile/:uuid"
         element={
           <RequireAuth>
             <ProfilePage />

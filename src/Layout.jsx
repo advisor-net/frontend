@@ -35,7 +35,7 @@ const Layout = () => {
                 display={'flex'}
               >
                 <NavLink 
-                  to={'/profile'}
+                  to={`/profile/${auth.user.uuid}`}
                   style={({ isActive }) =>
                     isActive ? activeStyle : undefined
                   }

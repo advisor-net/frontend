@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
     // now fetch user info
     const userProfile = await authService.getProfile();
     setUser(userProfile);
-    signinCallbackRef.current = rerouteCallback;
+    signinCallbackRef.current = () => rerouteCallback(userProfile);
   };
 
   const signinWithToken = async (rerouteCallback, signal) => {
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
     setInitialLoginAttempts(initialLoginAttempts + 1);
     const userProfile = await authService.getProfile(signal);
     setUser(userProfile);
-    signinCallbackRef.current = rerouteCallback;
+    signinCallbackRef.current = () => rerouteCallback(userProfile);
   };
 
   useEffect(() => {

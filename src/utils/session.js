@@ -5,7 +5,6 @@ export const setJwtToken = (token) => {
 };
 export const removeJwtToken = () => sessionStorage.removeItem('access');
 
-
 // Longer duration refresh token
 export const getRefreshToken = () => sessionStorage.getItem('refresh');
 export const setRefreshToken = (token) => {

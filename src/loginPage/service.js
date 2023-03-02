@@ -6,9 +6,8 @@ const authService = {
     params,
   }),
 
-  getProfile: async (signal) => request.get({
+  getProfile: async () => request.get({
     url: '/profile/',
-    signal,
   }),
 };
 

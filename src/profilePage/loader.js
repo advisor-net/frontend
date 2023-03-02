@@ -8,14 +8,14 @@ const loadProfile = async ({ params }) => {
   if (!loggedInUuid) {
     // redirect to login
     return redirect('/login');
-  } else if (loggedInUuid !== params.uuid) {
+  } if (loggedInUuid !== params.uuid) {
     // redirect to network profile since you are not viewing your own profile
     return redirect(`/network/p/${params.uuid}`);
   }
 
   try {
-   const response = await profileService.getUserDetails(params.uuid);
-   return response;
+    const response = await profileService.getUserDetails(params.uuid);
+    return response;
   } catch (error) {
     console.error(error);
     return {};

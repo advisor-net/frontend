@@ -1,4 +1,3 @@
-import { redirect } from 'react-router-dom';
 import { keysToCamelCaseDeep, keysToSnakeCaseDeep } from './utils';
 import { getJwtToken, getRefreshToken, setJwtToken } from './session';
 
@@ -153,9 +152,7 @@ const requestFunc = async ({
     if (error.statusCode === 401) {
       // try to grab a new access token using the refresh token
       // if this works, then retry the endpoint. If not, then push them to login
-      // screen. We will only hit this scenario when calling an endpoint
-      // that is not tied specifically to a page route, since those pages will be
-      // protected by auth context
+      // screen.
       const refreshToken = getRefreshToken();
       try {
         const refreshTokenResponse = await performRequest({
@@ -167,7 +164,9 @@ const requestFunc = async ({
         setJwtToken(refreshTokenResponse.access);
       } catch (refreshTokenError) {
         if (refreshTokenError.statusCode === 401) {
-          redirect('/login');
+          window.location.replace(
+            `${window.location.origin}/login`,
+          );
           return null;
         }
         throw refreshTokenError;

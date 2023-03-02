@@ -1,12 +1,11 @@
 import { Text } from '@chakra-ui/react';
 
 import { createBrowserRouter } from 'react-router-dom';
-import LoginPage from './auth/LoginPage';
-import RequireAuth from './auth/RequireAuth';
+import LoginPage from './loginPage/LoginPage';
 import ProfilePage from './profilePage/ProfilePage';
 import NetworkSearch from './networkPage/NetworkSearch';
 import AccountSettings from './accountSettings/AccountSettings';
-import Layout from './Layout';
+import ProtectedLayout from './ProtectedLayout';
 
 import { loadProfileData } from './profilePage/loader';
 
@@ -20,43 +19,30 @@ const NoMatch = () => {
 
 const router = createBrowserRouter([
   {
+    path: "/login",
+    element: <LoginPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
     path: "/",
-    element: <Layout />,
+    element: <ProtectedLayout />,
     errorElement: <ErrorPage />,
     children: [
-      {
-        path: "/login",
-        element: <LoginPage />,
-        errorElement: <ErrorPage />,
-      },
-      // NOTE: this is getting called twice due to our shitty login flow, FIX IT
       {
         index: true,
         path: "/profile/:uuid",
         loader: loadProfileData,
-        element: (
-          <RequireAuth>
-            <ProfilePage />
-          </RequireAuth>
-        ),
+        element: <ProfilePage />,
         errorElement: <ErrorPage />,
       },
       {
-        path: "/n",
-        element: (
-          <RequireAuth>
-            <NetworkSearch />
-          </RequireAuth>
-        ),
+        path: "/network",
+        element: <NetworkSearch />,
         errorElement: <ErrorPage />,
       },
       {
         path: "/account",
-        element: (
-          <RequireAuth>
-            <AccountSettings />
-          </RequireAuth>
-        ),
+        element: <AccountSettings />,
         errorElement: <ErrorPage />,
       },
       {
@@ -64,6 +50,10 @@ const router = createBrowserRouter([
         element: <NoMatch />
       },
     ],
+  },
+  {
+    path: "*",
+    element: <NoMatch />
   },
 ]);
 

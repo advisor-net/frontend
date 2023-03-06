@@ -15,3 +15,7 @@ export const removeRefreshToken = () => sessionStorage.removeItem('refresh');
 export const getUserUuid = () => sessionStorage.getItem('userUuid');
 export const setUserUuid = (uuid) => sessionStorage.setItem('userUuid', uuid);
 export const removeUserUuid = () => sessionStorage.removeItem('userUuid');
+
+export const getMetroArea = () => sessionStorage.getItem('metro');
+export const setMetroArea = (metro) => sessionStorage.setItem('metro', metro);
+export const removeMetroArea = () => sessionStorage.removeItem('metro');

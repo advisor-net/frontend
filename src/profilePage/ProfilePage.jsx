@@ -19,7 +19,7 @@ const ProfilePageComponent = () => {
   )
 };
 
-function ProfilePage() {
+const ProfilePage = () => {
   const { data } = useLoaderData();
 
   return (

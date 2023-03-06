@@ -185,3 +185,9 @@ export const keysToSnakeCaseDeep = (obj) => {
 };
 
 export const removeSpaces = (str) => str.replace(/\s/g, '');
+
+export const flipObject = (data) => Object.fromEntries(
+  Object
+    .entries(data)
+    .map(([key, value]) => [value, key]),
+);

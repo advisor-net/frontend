@@ -8,6 +8,7 @@ import AccountSettings from './accountSettings/AccountSettings';
 import ProtectedLayout from './ProtectedLayout';
 
 import { loadProfileData } from './profilePage/loader';
+import { loadNetworkSearchData } from './networkPage/loader';
 
 const ErrorPage = () => (
   <Text>ERROR...must have been the night shift....sorry budddddyyyyyyyyyyy</Text>
@@ -37,6 +38,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/network",
+        loader: loadNetworkSearchData,
         element: <NetworkSearch />,
         errorElement: <ErrorPage />,
       },

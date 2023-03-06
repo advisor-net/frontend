@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import {
+  useEffect, useRef, useState,
+} from 'react';
 
 /*
 For React Hooks in React 18, a useEffect() with zero dependencies will be executed twice.

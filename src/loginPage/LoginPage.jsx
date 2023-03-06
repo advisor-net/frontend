@@ -1,7 +1,7 @@
 
 import { useLocation, useNavigate } from 'react-router-dom';
-import authService from './service';
-import { setJwtToken, setRefreshToken, setUserUuid} from '../utils/session';
+import authService from '../services/authService';
+import { setJwtToken, setRefreshToken, setUserUuid, setMetroArea} from '../utils/session';
 
 import {
   Flex,
@@ -35,6 +35,7 @@ const LoginPage = () => {
   const originalFrom = location.state?.from?.pathname || '/';
   const from = originalFrom === '/' ? '/profile' : originalFrom;
 
+  // TODO: clean up this redirect...i want the pages and loaders to be to handle their own URL logic
   const signinWithCredentials = async (params) => {
     const tokenInfo = await authService.obtainTokenPair(params);
     setJwtToken(tokenInfo.access);
@@ -43,6 +44,9 @@ const LoginPage = () => {
     // now fetch user info
     const userProfile = await authService.getProfile();
     setUserUuid(userProfile.uuid);
+    if (userProfile.metro) {
+      setMetroArea(userProfile.metro.name);
+    }
 
     // Send them back to the page they tried to visit when they were
     // redirected to the login page. Use { replace: true } so we don't create

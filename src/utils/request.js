@@ -157,7 +157,7 @@ const requestFunc = async ({
       try {
         const refreshTokenResponse = await performRequest({
           url: '/token/refresh/',
-          params: { refresh: refreshToken || '' },
+          params: { refresh: refreshToken || 'bad_token' },
           method: 'POST',
           additionalRequestParams: {},
         });

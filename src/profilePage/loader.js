@@ -5,7 +5,7 @@ import { getUserUuid } from '../utils/session';
 
 // TODO: improve the data flow here (from login as well), where the page handles the URL nonsense
 // I want each page to be independent and pull the resources it needs
-// could set up a loader for the protected route that fetches the profile information for each 
+// could set up a loader for the protected route that fetches the profile information for each
 // page...that is probably a good way to do things
 // may lead to a lot of redundant fetches...but we will optimize that later
 const loadProfile = async ({ params }) => {

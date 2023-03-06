@@ -32,7 +32,7 @@ const ProtectedLayout = () => {
   };
 
   return (
-    <>
+    <Flex direction="column">
       <Box background={'gray.100'} paddingX={4}>
         <Flex height={16} alignItems={'center'} justifyContent={'space-between'}>
           <HStack spacing={8} alignItems={'center'}>
@@ -85,7 +85,7 @@ const ProtectedLayout = () => {
         </Flex>
       </Box>
       <Outlet />
-    </>
+    </Flex>
   );
 };
 

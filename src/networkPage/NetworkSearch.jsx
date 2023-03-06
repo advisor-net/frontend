@@ -17,10 +17,7 @@ const NetworkSearchComponent = () => {
       <Flex border="1px solid #ddd" width="100%" padding="2">
         <Heading size="lg">Filters</Heading>
       </Flex>
-      <Flex direction="column" border="1px solid #ddd" width="100%" padding="2">
-        <Heading size="lg">Results</Heading>
-        <SearchResults/>
-      </Flex>
+      <SearchResults/>
     </Flex>
   )
 };

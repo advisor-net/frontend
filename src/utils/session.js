@@ -1,21 +1,22 @@
+// TODO: switch to session auth and drop JWT token auth
 // Short duration JWT token
-export const getJwtToken = () => sessionStorage.getItem('access');
+export const getJwtToken = () => localStorage.getItem('access');
 export const setJwtToken = (token) => {
-  sessionStorage.setItem('access', token);
+  localStorage.setItem('access', token);
 };
-export const removeJwtToken = () => sessionStorage.removeItem('access');
+export const removeJwtToken = () => localStorage.removeItem('access');
 
 // Longer duration refresh token
-export const getRefreshToken = () => sessionStorage.getItem('refresh');
+export const getRefreshToken = () => localStorage.getItem('refresh');
 export const setRefreshToken = (token) => {
-  sessionStorage.setItem('refresh', token);
+  localStorage.setItem('refresh', token);
 };
-export const removeRefreshToken = () => sessionStorage.removeItem('refresh');
+export const removeRefreshToken = () => localStorage.removeItem('refresh');
 
-export const getUserUuid = () => sessionStorage.getItem('userUuid');
-export const setUserUuid = (uuid) => sessionStorage.setItem('userUuid', uuid);
-export const removeUserUuid = () => sessionStorage.removeItem('userUuid');
+export const getUserUuid = () => localStorage.getItem('userUuid');
+export const setUserUuid = (uuid) => localStorage.setItem('userUuid', uuid);
+export const removeUserUuid = () => localStorage.removeItem('userUuid');
 
-export const getMetroArea = () => sessionStorage.getItem('metro');
-export const setMetroArea = (metro) => sessionStorage.setItem('metro', metro);
-export const removeMetroArea = () => sessionStorage.removeItem('metro');
+export const getMetroArea = () => localStorage.getItem('metro');
+export const setMetroArea = (metro) => localStorage.setItem('metro', metro);
+export const removeMetroArea = () => localStorage.removeItem('metro');

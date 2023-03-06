@@ -182,7 +182,7 @@ export const updateURLfromParamsObj = (paramsObj) => {
   const searchParams = constructURLParams(paramsObj);
   const url = new URL(window.location);
   url.search = searchParams.toString();
-  window.history.pushState(null, '', url.toString());
+  window.history.replaceState(null, '', url.toString());
 };
 
 export const getDefaultParamsForProfile = (profile) => {

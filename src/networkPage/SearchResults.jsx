@@ -263,7 +263,12 @@ const SearchResults = () => {
         </Box>
       )}
       <Flex alignSelf="center" justifyContent="center" alignItems="center">
-        <Pagination onChange={handlePageChange} current={currentPage} total={results.count || 0}/>
+        <Pagination 
+          onChange={handlePageChange} 
+          current={currentPage} 
+          pageSize={pageSize.value} 
+          total={results.count || 0}
+        />
         <Select 
           size="sm"
           value={pageSize}

@@ -1,16 +1,14 @@
-import { keysToCamelCaseDeep, keysToSnakeCaseDeep } from './utils';
-import { getJwtToken, getRefreshToken, setJwtToken } from './session';
+import {keysToCamelCaseDeep, keysToSnakeCaseDeep} from './utils';
+import {getJwtToken, getRefreshToken, setJwtToken} from './session';
 
-const isObject = (a) => typeof a === 'object' && a !== null;
+const isObject = a => typeof a === 'object' && a !== null;
 
-const prepareFetch = ({
-  url, token, params, method, additionalRequestParams, signal,
-}) => {
+const prepareFetch = ({url, token, params, method, additionalRequestParams, signal}) => {
   const fetchUrl = url.includes('://') ? url : process.env.REACT_APP_API_URL + url;
   let credentials = {};
   if (
-    fetchUrl.includes(process.env.REACT_APP_API_URL)
-    && !additionalRequestParams.ignoreCredentials
+    fetchUrl.includes(process.env.REACT_APP_API_URL) &&
+    !additionalRequestParams.ignoreCredentials
   ) {
     // if we are making CORS request to our API server, send any cookies
     credentials = {
@@ -53,7 +51,7 @@ const prepareFetch = ({
     fetchOptions.signal = signal;
   }
 
-  return { fetchUrl, fetchOptions };
+  return {fetchUrl, fetchOptions};
 };
 
 const getPayload = (response, additionalRequestParams) => {
@@ -93,11 +91,9 @@ export function FetchError(statusCode, payload) {
 FetchError.prototype = Object.create(Error.prototype);
 FetchError.prototype.constructor = FetchError;
 
-const performRequest = async ({
-  url, params, method, additionalRequestParams, signal,
-}) => {
+const performRequest = async ({url, params, method, additionalRequestParams, signal}) => {
   const token = getJwtToken();
-  const { fetchUrl, fetchOptions } = prepareFetch({
+  const {fetchUrl, fetchOptions} = prepareFetch({
     url,
     token,
     params,
@@ -127,9 +123,7 @@ const performRequest = async ({
   return payload;
 };
 
-const requestFunc = async ({
-  url, params, method, additionalRequestParams, signal,
-}) => {
+const requestFunc = async ({url, params, method, additionalRequestParams, signal}) => {
   try {
     return await performRequest({
       url,
@@ -148,7 +142,7 @@ const requestFunc = async ({
       try {
         const refreshTokenResponse = await performRequest({
           url: '/token/refresh/',
-          params: { refresh: refreshToken || 'bad_token' },
+          params: {refresh: refreshToken || 'bad_token'},
           method: 'POST',
           additionalRequestParams: {},
         });
@@ -177,45 +171,41 @@ const requestFunc = async ({
 };
 
 const request = {
-  get: async ({
-    url, params = {}, additionalRequestParams = {}, signal = null,
-  }) => requestFunc({
-    url,
-    params,
-    method: 'GET',
-    additionalRequestParams,
-    signal,
-  }),
+  get: async ({url, params = {}, additionalRequestParams = {}, signal = null}) =>
+    requestFunc({
+      url,
+      params,
+      method: 'GET',
+      additionalRequestParams,
+      signal,
+    }),
 
-  post: async ({
-    url, params = {}, additionalRequestParams = {}, signal = null,
-  }) => requestFunc({
-    url,
-    params,
-    method: 'POST',
-    additionalRequestParams,
-    signal,
-  }),
+  post: async ({url, params = {}, additionalRequestParams = {}, signal = null}) =>
+    requestFunc({
+      url,
+      params,
+      method: 'POST',
+      additionalRequestParams,
+      signal,
+    }),
 
-  patch: async ({
-    url, params = {}, additionalRequestParams = {}, signal = null,
-  }) => requestFunc({
-    url,
-    params,
-    method: 'PATCH',
-    additionalRequestParams,
-    signal,
-  }),
+  patch: async ({url, params = {}, additionalRequestParams = {}, signal = null}) =>
+    requestFunc({
+      url,
+      params,
+      method: 'PATCH',
+      additionalRequestParams,
+      signal,
+    }),
 
-  delete: async ({
-    url, params = {}, additionalRequestParams = {}, signal = null,
-  }) => requestFunc({
-    url,
-    params,
-    method: 'DELETE',
-    additionalRequestParams,
-    signal,
-  }),
+  delete: async ({url, params = {}, additionalRequestParams = {}, signal = null}) =>
+    requestFunc({
+      url,
+      params,
+      method: 'DELETE',
+      additionalRequestParams,
+      signal,
+    }),
 };
 
 export default request;

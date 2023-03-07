@@ -1,4 +1,4 @@
-import { flipObject } from '../utils/utils';
+import {flipObject} from '../utils/utils';
 
 // TODO: range filtering, and move all of this to constants
 export const FILTER_TYPES = {

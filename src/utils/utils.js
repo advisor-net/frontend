@@ -44,7 +44,7 @@ export const formatPrice = (priceIn, decimalPlaces = 0, disableRounding = false)
     } else {
       // truncate at decimal places
       price = (Math.floor(price * 10 ** decimalPlaces + 0.00001) / 10 ** decimalPlaces).toFixed(
-        decimalPlaces,
+        decimalPlaces
       );
     }
   } else {
@@ -110,10 +110,11 @@ export const toCamelCase = (str) => {
   });
 };
 
-export const keysToCamelCase = (obj) => Object.keys(obj).reduce((acc, key) => {
-  acc[toCamelCase(key)] = obj[key];
-  return acc;
-}, {});
+export const keysToCamelCase = (obj) =>
+  Object.keys(obj).reduce((acc, key) => {
+    acc[toCamelCase(key)] = obj[key];
+    return acc;
+  }, {});
 
 export const isPrimitiveType = (a) => Object(a) !== a;
 
@@ -145,10 +146,11 @@ export const toSnakeCase = (str) => {
   });
 };
 
-export const keysToSnakeCase = (obj) => Object.keys(obj).reduce((acc, key) => {
-  acc[toSnakeCase(key)] = obj[key];
-  return acc;
-}, {});
+export const keysToSnakeCase = (obj) =>
+  Object.keys(obj).reduce((acc, key) => {
+    acc[toSnakeCase(key)] = obj[key];
+    return acc;
+  }, {});
 
 export const keysToSnakeCaseDeep = (obj) => {
   // base case -- primitives
@@ -172,4 +174,5 @@ export const keysToSnakeCaseDeep = (obj) => {
 
 export const removeSpaces = (str) => str.replace(/\s/g, '');
 
-export const flipObject = (data) => Object.fromEntries(Object.entries(data).map(([key, value]) => [value, key]));
+export const flipObject = (data) =>
+  Object.fromEntries(Object.entries(data).map(([key, value]) => [value, key]));

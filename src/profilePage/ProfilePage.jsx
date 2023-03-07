@@ -1,12 +1,12 @@
-import {Suspense} from 'react';
+import { Suspense } from 'react';
 
-import {Text, Heading, Box} from '@chakra-ui/react';
+import { Text, Heading, Box } from '@chakra-ui/react';
 
-import {useLoaderData, useAsyncValue, Await} from 'react-router-dom';
+import { useLoaderData, useAsyncValue, Await } from 'react-router-dom';
 
 // ToDo: actually build out the page
 const ProfilePageComponent = () => {
-  const {user, isOwnProfile} = useAsyncValue();
+  const { user, isOwnProfile } = useAsyncValue();
 
   return (
     <Box>
@@ -19,7 +19,7 @@ const ProfilePageComponent = () => {
 };
 
 const ProfilePage = () => {
-  const {data} = useLoaderData();
+  const { data } = useLoaderData();
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

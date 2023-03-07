@@ -74,8 +74,9 @@ const extractFilterInfoFromParamKey = (paramKey, paramValue) => {
     if (paramKey.includes(filterKey)) {
       const restOfParamKey = paramKey.substring(paramKey.indexOf(filterKey) + filterKey.length);
       // checking for the __in pattern
-      const isValid = restOfParamKey.startsWith(SEPARATOR)
-        && Object.values(FILTER_TYPES).includes(restOfParamKey.slice(SEPARATOR.length));
+      const isValid =
+        restOfParamKey.startsWith(SEPARATOR) &&
+        Object.values(FILTER_TYPES).includes(restOfParamKey.slice(SEPARATOR.length));
       if (isValid) {
         return {
           isValid,
@@ -93,7 +94,10 @@ export const transformUrlToParamsObj = (url) => {
   const newParamsObj = [];
   if (url.search) {
     for (const [paramKey, paramValue] of url.searchParams.entries()) {
-      const { isValid, filterKey, filterType } = extractFilterInfoFromParamKey(paramKey, paramValue);
+      const { isValid, filterKey, filterType } = extractFilterInfoFromParamKey(
+        paramKey,
+        paramValue
+      );
       if (isValid) {
         newParamsObj.push({
           filterKey,
@@ -115,9 +119,10 @@ export const transformParamsObjToUrl = (paramsObj) => {
     if (Object.values(OTHER_QUERY_PARAM_KEYS).includes(filterKey)) {
       paramKey = `${filterKey}`;
     } else {
-      paramKey = filterType === FILTER_TYPES.EQUAL
-        ? `${filterKey}`
-        : `${filterKey}${SEPARATOR}${filterType}`;
+      paramKey =
+        filterType === FILTER_TYPES.EQUAL
+          ? `${filterKey}`
+          : `${filterKey}${SEPARATOR}${filterType}`;
     }
 
     searchParams.set(paramKey, value);
@@ -183,7 +188,9 @@ export const transformParamsObjToSortByTableState = (paramsObj) => {
 
 export const transformSortByTableStateToParamsObj = (sortByTableState, previousParamsObj) => {
   if (sortByTableState.length === 0) {
-    return previousParamsObj.filter((option) => option.filterKey !== OTHER_QUERY_PARAM_KEYS.ORDER_BY);
+    return previousParamsObj.filter(
+      (option) => option.filterKey !== OTHER_QUERY_PARAM_KEYS.ORDER_BY
+    );
   }
   const sorter = sortByTableState[0];
   const filterKey = TABLE_ACCESSOR_TO_FIELD[sorter.id];
@@ -196,23 +203,25 @@ export const transformSortByTableStateToParamsObj = (sortByTableState, previousP
   ]);
 };
 
-export const addFilterToParams = (filterField, filterType, fieldValue, previousParams) => previousParams
-  .filter((option) => !(option.filterKey === filterField && option.filterType === filterType))
-  .concat([
-    {
-      filterKey: filterField,
-      filterType,
-      value: fieldValue,
-    },
-  ]);
+export const addFilterToParams = (filterField, filterType, fieldValue, previousParams) =>
+  previousParams
+    .filter((option) => !(option.filterKey === filterField && option.filterType === filterType))
+    .concat([
+      {
+        filterKey: filterField,
+        filterType,
+        value: fieldValue,
+      },
+    ]);
 
-export const removeFilterFromParams = (filterField, filterType, previousParams) => previousParams.filter(
-  (option) => !(option.filterKey === filterField && option.filterType === filterType),
-);
+export const removeFilterFromParams = (filterField, filterType, previousParams) =>
+  previousParams.filter(
+    (option) => !(option.filterKey === filterField && option.filterType === filterType)
+  );
 
 export const updatePageQueryInParams = (nextPage, previousParams) => {
   const nextParams = previousParams.filter(
-    (option) => option.filterKey !== OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER,
+    (option) => option.filterKey !== OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER
   );
   return nextParams.concat([
     {
@@ -225,8 +234,9 @@ export const updatePageQueryInParams = (nextPage, previousParams) => {
 
 export const updatePageSizeInParams = (nextPageSize, nextPageNumber, previousParams) => {
   const nextParams = previousParams.filter(
-    (option) => option.filterKey !== OTHER_QUERY_PARAM_KEYS.PAGE_SIZE
-      && option.filterKey !== OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER,
+    (option) =>
+      option.filterKey !== OTHER_QUERY_PARAM_KEYS.PAGE_SIZE &&
+      option.filterKey !== OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER
   );
   return nextParams.concat([
     {

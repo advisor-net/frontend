@@ -32,6 +32,7 @@ const loadProfile = async ({ params }) => {
 
 // NOTE: not awaiting here to take advantage of defer behavior
 // https://reactrouter.com/en/main/guides/deferred
-export const loadProfileData = async ({ params }) => defer({
-  data: loadProfile({ params }),
-});
+export const loadProfileData = async ({ params }) =>
+  defer({
+    data: loadProfile({ params }),
+  });

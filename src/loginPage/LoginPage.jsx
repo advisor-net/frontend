@@ -1,6 +1,6 @@
-import {useLocation, useNavigate} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
-import {setJwtToken, setMetroArea, setRefreshToken, setUserUuid} from '../utils/session';
+import { setJwtToken, setMetroArea, setRefreshToken, setUserUuid } from '../utils/session';
 
 import {
   Box,
@@ -15,7 +15,7 @@ import {
   Input,
   VStack,
 } from '@chakra-ui/react';
-import {Field, Form, Formik} from 'formik';
+import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 
 import Logo from '../Logo';
@@ -36,7 +36,7 @@ const LoginPage = () => {
   const from = originalFrom === '/' ? '/profile' : originalFrom;
 
   // TODO: clean up this redirect...i want the pages and loaders to be to handle their own URL logic
-  const signinWithCredentials = async params => {
+  const signinWithCredentials = async (params) => {
     const tokenInfo = await authService.obtainTokenPair(params);
     setJwtToken(tokenInfo.access);
     setRefreshToken(tokenInfo.refresh);
@@ -55,7 +55,7 @@ const LoginPage = () => {
     // won't end up back on the login page, which is also really nice for the
     // user experience.
     let useFrom = from === '/profile' ? `/profile/${userProfile.uuid}` : from;
-    navigate(useFrom, {replace: true});
+    navigate(useFrom, { replace: true });
   };
 
   return (
@@ -78,14 +78,14 @@ const LoginPage = () => {
             }}
             validationSchema={LoginSchema}
             validateOnMount={false}
-            onSubmit={async values => {
+            onSubmit={async (values) => {
               await signinWithCredentials({
                 username: values.email,
                 password: values.password,
               });
             }}
           >
-            {({handleSubmit, errors, touched, isSubmitting}) => (
+            {({ handleSubmit, errors, touched, isSubmitting }) => (
               <Form onSubmit={handleSubmit}>
                 <VStack spacing={4} align="flex-start">
                   <FormControl isInvalid={!!errors.email && touched.email}>

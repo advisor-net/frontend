@@ -1,11 +1,11 @@
-import {useMemo, useEffect, useState} from 'react';
-import {useTable, useSortBy} from 'react-table';
-import {useAsyncValue} from 'react-router-dom';
-import {useSearchContext} from './SearchContext';
-import {useQuery} from 'react-query';
+import { useMemo, useEffect, useState } from 'react';
+import { useTable, useSortBy } from 'react-table';
+import { useAsyncValue } from 'react-router-dom';
+import { useSearchContext } from './SearchContext';
+import { useQuery } from 'react-query';
 import networkService from '../services/networkService';
 import Pagination from 'rc-pagination';
-import {Select} from 'chakra-react-select';
+import { Select } from 'chakra-react-select';
 
 import {
   getDefaultParamsForProfile,
@@ -23,19 +23,19 @@ import {
   JOB_LEVEL_LABELS,
 } from './constants';
 
-import {formatLargePrice} from '../utils/utils';
+import { formatLargePrice } from '../utils/utils';
 
-import {Table, Thead, Tbody, Tr, Th, Td, Flex, Heading, Box} from '@chakra-ui/react';
-import {ChevronUpIcon, ChevronDownIcon} from '@chakra-ui/icons';
+import { Table, Thead, Tbody, Tr, Th, Td, Flex, Heading, Box } from '@chakra-ui/react';
+import { ChevronUpIcon, ChevronDownIcon } from '@chakra-ui/icons';
 
-const CustomTable = ({columns, data, setOrderBy, initialSortBy}) => {
+const CustomTable = ({ columns, data, setOrderBy, initialSortBy }) => {
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     rows,
     prepareRow,
-    state: {sortBy},
+    state: { sortBy },
   } = useTable(
     {
       columns,
@@ -57,9 +57,9 @@ const CustomTable = ({columns, data, setOrderBy, initialSortBy}) => {
     <>
       <Table {...getTableProps()} variant="striped" colorScheme="teal" size="sm">
         <Thead position="sticky" top={0} background="grey">
-          {headerGroups.map(headerGroup => (
+          {headerGroups.map((headerGroup) => (
             <Tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
+              {headerGroup.headers.map((column) => (
                 <Th
                   userSelect="none"
                   {...column.getHeaderProps()}
@@ -90,7 +90,7 @@ const CustomTable = ({columns, data, setOrderBy, initialSortBy}) => {
             prepareRow(row);
             return (
               <Tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
+                {row.cells.map((cell) => {
                   return <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>;
                 })}
               </Tr>
@@ -103,9 +103,9 @@ const CustomTable = ({columns, data, setOrderBy, initialSortBy}) => {
 };
 
 const PAGE_SIZE_OPTIONS = [
-  {value: 20, label: 20},
-  {value: 50, label: 50},
-  {value: 100, label: 100},
+  { value: 20, label: 20 },
+  { value: 50, label: 50 },
+  { value: 100, label: 100 },
 ];
 
 const SearchResults = () => {
@@ -135,25 +135,25 @@ const SearchResults = () => {
       {
         Header: 'Level',
         accessor: FIELD_TO_TABLE_ACCESSOR[FIELD_KEYS.LEVEL],
-        Cell: ({value}) => JOB_LEVEL_LABELS[value] || '',
+        Cell: ({ value }) => JOB_LEVEL_LABELS[value] || '',
         sortDescFirst: true,
       },
       {
         Header: 'Net worth',
         accessor: FIELD_TO_TABLE_ACCESSOR[FIELD_KEYS.NET_WORTH],
-        Cell: ({value}) => formatLargePrice(value, 3),
+        Cell: ({ value }) => formatLargePrice(value, 3),
         sortDescFirst: true,
       },
       {
         Header: 'Annual income',
         accessor: FIELD_TO_TABLE_ACCESSOR[FIELD_KEYS.INC_TOTAL_ANNUAL],
-        Cell: ({value}) => formatLargePrice(value, 3),
+        Cell: ({ value }) => formatLargePrice(value, 3),
         sortDescFirst: true,
       },
       {
         Header: 'Housing',
         accessor: FIELD_TO_TABLE_ACCESSOR[FIELD_KEYS.EXP_HOUSING],
-        Cell: ({value}) => formatLargePrice(value, 3),
+        Cell: ({ value }) => formatLargePrice(value, 3),
         sortDescFirst: true,
       },
     ],
@@ -164,8 +164,8 @@ const SearchResults = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setCurrentPageSize] = useState(PAGE_SIZE_OPTIONS[0]);
 
-  const {setParamsObj, paramsObj, results, setResults, setOrderBy} = useSearchContext();
-  const {profile} = useAsyncValue();
+  const { setParamsObj, paramsObj, results, setResults, setOrderBy } = useSearchContext();
+  const { profile } = useAsyncValue();
 
   // onmount set params object from the URL
   useEffect(() => {
@@ -195,13 +195,13 @@ const SearchResults = () => {
     setParamsObj(nextParamsObj);
   }, [profile, setParamsObj]);
 
-  const handlePageChange = nextPage => {
+  const handlePageChange = (nextPage) => {
     setCurrentPage(nextPage);
     const nextParamsObj = updatePageQueryInParams(nextPage, paramsObj);
     setParamsObj(nextParamsObj);
   };
 
-  const handlePageSizeChange = nextPageSize => {
+  const handlePageSizeChange = (nextPageSize) => {
     setCurrentPageSize(nextPageSize);
     setCurrentPage(1);
     const nextParamsObj = updatePageSizeInParams(nextPageSize.value, 1, paramsObj);
@@ -220,7 +220,7 @@ const SearchResults = () => {
       refetchOnWindowFocus: false,
       retry: false,
       onError: () => null,
-      onSuccess: data => {
+      onSuccess: (data) => {
         setResults(data);
       },
     }

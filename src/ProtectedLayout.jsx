@@ -10,11 +10,11 @@ import {
   MenuItem,
   MenuDivider,
 } from '@chakra-ui/react';
-import {Outlet, useNavigate, NavLink} from 'react-router-dom';
-import {getUserUuid} from './utils/session';
+import { Outlet, useNavigate, NavLink } from 'react-router-dom';
+import { getUserUuid } from './utils/session';
 import Logo from './Logo';
 
-import {removeJwtToken, removeRefreshToken, removeUserUuid} from './utils/session';
+import { removeJwtToken, removeRefreshToken, removeUserUuid } from './utils/session';
 
 const ProtectedLayout = () => {
   const navigate = useNavigate();
@@ -40,11 +40,14 @@ const ProtectedLayout = () => {
             <HStack as={'nav'} spacing={4} display={'flex'}>
               <NavLink
                 to={`/profile/${getUserUuid()}`}
-                style={({isActive}) => (isActive ? activeStyle : undefined)}
+                style={({ isActive }) => (isActive ? activeStyle : undefined)}
               >
                 Profile
               </NavLink>
-              <NavLink to={'/network'} style={({isActive}) => (isActive ? activeStyle : undefined)}>
+              <NavLink
+                to={'/network'}
+                style={({ isActive }) => (isActive ? activeStyle : undefined)}
+              >
                 Network
               </NavLink>
             </HStack>

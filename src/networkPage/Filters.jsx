@@ -1,6 +1,6 @@
-import {useState} from 'react';
+import { useState } from 'react';
 
-import {useEffectOnce} from '../utils/hooks';
+import { useEffectOnce } from '../utils/hooks';
 
 import {
   CURRENT_PFM_LABELS,
@@ -13,11 +13,11 @@ import {
   JOB_LEVEL_LABELS,
 } from './constants';
 
-import {addFilterToParams, removeFilterFromParams, getEmptyParams} from './utils';
+import { addFilterToParams, removeFilterFromParams, getEmptyParams } from './utils';
 
-import {useSearchContext} from './SearchContext';
+import { useSearchContext } from './SearchContext';
 
-import {formatLargePrice} from '../utils/utils';
+import { formatLargePrice } from '../utils/utils';
 
 import CurrentPFMSelector from './selectorComponents/CurrentPFMSelector';
 import FilterFieldSelector from './selectorComponents/FilterFieldSelector';
@@ -30,7 +30,7 @@ import MetroAreaSelector from './selectorComponents/MetroAreaSelector';
 
 import networkService from '../services/networkService';
 
-import {HamburgerIcon} from '@chakra-ui/icons';
+import { HamburgerIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -51,21 +51,27 @@ const getInputForm = (filterField, filterType, onChange) => {
   switch (filterField) {
     case FILTERABLE_FIELD_KEYS.CURRENT_PFM:
       return (
-        <CurrentPFMSelector onChange={options => onChange(options.map(option => option.value))} />
+        <CurrentPFMSelector
+          onChange={(options) => onChange(options.map((option) => option.value))}
+        />
       );
     case FILTERABLE_FIELD_KEYS.GENDER:
-      return <GenderSelector onChange={options => onChange(options.map(option => option.value))} />;
+      return (
+        <GenderSelector onChange={(options) => onChange(options.map((option) => option.value))} />
+      );
     case FILTERABLE_FIELD_KEYS.INDUSTRY:
       return (
-        <IndustrySelector onChange={options => onChange(options.map(option => option.value))} />
+        <IndustrySelector onChange={(options) => onChange(options.map((option) => option.value))} />
       );
     case FILTERABLE_FIELD_KEYS.JOB_TITLE:
       return (
-        <JobTitleSelector onChange={options => onChange(options.map(option => option.value))} />
+        <JobTitleSelector onChange={(options) => onChange(options.map((option) => option.value))} />
       );
     case FILTERABLE_FIELD_KEYS.METRO:
       return (
-        <MetroAreaSelector onChange={options => onChange(options.map(option => option.value))} />
+        <MetroAreaSelector
+          onChange={(options) => onChange(options.map((option) => option.value))}
+        />
       );
     case FILTERABLE_FIELD_KEYS.LEVEL: {
       switch (filterType) {
@@ -73,16 +79,16 @@ const getInputForm = (filterField, filterType, onChange) => {
           return (
             <LevelSelector
               isMulti={true}
-              onChange={options => onChange(options.map(option => option.value))}
+              onChange={(options) => onChange(options.map((option) => option.value))}
             />
           );
         default:
-          return <LevelSelector isMulti={false} onChange={option => onChange(option.value)} />;
+          return <LevelSelector isMulti={false} onChange={(option) => onChange(option.value)} />;
       }
     }
     default:
       return (
-        <NumberInput onChange={valueAsString => onChange(parseFloat(valueAsString))} size="sm">
+        <NumberInput onChange={(valueAsString) => onChange(parseFloat(valueAsString))} size="sm">
           <NumberInputField />
         </NumberInput>
       );
@@ -93,39 +99,39 @@ const getRenderableValueString = async (filterField, filterType, value) => {
   switch (filterField) {
     case FILTERABLE_FIELD_KEYS.CURRENT_PFM: {
       const stringArr = value.toString().split(',');
-      return stringArr.map(value => CURRENT_PFM_LABELS[value]).join(', ');
+      return stringArr.map((value) => CURRENT_PFM_LABELS[value]).join(', ');
     }
     case FILTERABLE_FIELD_KEYS.GENDER: {
       const stringArr = value.toString().split(',');
-      return stringArr.map(value => GENDER_LABELS[value]).join(', ');
+      return stringArr.map((value) => GENDER_LABELS[value]).join(', ');
     }
     case FILTERABLE_FIELD_KEYS.INDUSTRY: {
       const searchParams = new URLSearchParams();
       searchParams.set('id__in', value);
       const query = searchParams.toString();
       const response = await networkService.industrySearch(query);
-      return (response?.results || []).map(obj => obj.name).join(', ');
+      return (response?.results || []).map((obj) => obj.name).join(', ');
     }
     case FILTERABLE_FIELD_KEYS.JOB_TITLE: {
       const searchParams = new URLSearchParams();
       searchParams.set('id__in', value);
       const query = searchParams.toString();
       const response = await networkService.jobTitleSearch(query);
-      return (response?.results || []).map(obj => obj.name).join(', ');
+      return (response?.results || []).map((obj) => obj.name).join(', ');
     }
     case FILTERABLE_FIELD_KEYS.METRO: {
       const searchParams = new URLSearchParams();
       searchParams.set('id__in', value);
       const query = searchParams.toString();
       const response = await networkService.metroAreaSearch(query);
-      return (response?.results || []).map(obj => obj.name).join(', ');
+      return (response?.results || []).map((obj) => obj.name).join(', ');
     }
     // TODO: bug here with changing an existing filter
     case FILTERABLE_FIELD_KEYS.LEVEL: {
       switch (filterType) {
         case FILTER_TYPES.IN: {
           const stringArr = value.toString().split(',');
-          return stringArr.map(idValue => JOB_LEVEL_LABELS[parseInt(idValue)]).join(', ');
+          return stringArr.map((idValue) => JOB_LEVEL_LABELS[parseInt(idValue)]).join(', ');
         }
         default:
           return JOB_LEVEL_LABELS[value];
@@ -138,7 +144,7 @@ const getRenderableValueString = async (filterField, filterType, value) => {
   }
 };
 
-const ReadOnlyFilter = ({filterKey, filterType, value, onRemove, onEdit}) => {
+const ReadOnlyFilter = ({ filterKey, filterType, value, onRemove, onEdit }) => {
   const [renderValue, setRenderValue] = useState(null);
 
   // onMount, fetch the field display values...
@@ -147,7 +153,7 @@ const ReadOnlyFilter = ({filterKey, filterType, value, onRemove, onEdit}) => {
     const getRenderValue = async () => {
       return await getRenderableValueString(filterKey, filterType, value);
     };
-    getRenderValue().then(resp => {
+    getRenderValue().then((resp) => {
       setRenderValue(resp);
     });
   }, [setRenderValue, filterKey, filterType, value]);
@@ -175,25 +181,25 @@ const ReadOnlyFilter = ({filterKey, filterType, value, onRemove, onEdit}) => {
 };
 
 const Filters = () => {
-  const {setParamsObj, paramsObj} = useSearchContext();
+  const { setParamsObj, paramsObj } = useSearchContext();
 
   const [newFilterField, setNewFilterField] = useState(null);
   const [newFilterType, setNewFilterType] = useState(null);
   const [newFilterValue, setNewFilterValue] = useState(null);
-  const {isOpen, onOpen, onClose} = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleFilterFieldChange = option => {
+  const handleFilterFieldChange = (option) => {
     setNewFilterField(option);
     setNewFilterType(null);
     setNewFilterValue(null);
   };
 
-  const handleFilterTypeChange = option => {
+  const handleFilterTypeChange = (option) => {
     setNewFilterType(option);
     setNewFilterValue(null);
   };
 
-  const handleFilterValueChange = value => {
+  const handleFilterValueChange = (value) => {
     setNewFilterValue(value);
   };
 
@@ -244,7 +250,7 @@ const Filters = () => {
         Filters
       </Heading>
       <Flex alignItems="center" flexWrap="wrap" gap={2}>
-        {paramsObj.map(({filterKey, filterType, value}) => {
+        {paramsObj.map(({ filterKey, filterType, value }) => {
           if (Object.values(FILTERABLE_FIELD_KEYS).includes(filterKey)) {
             // NOTE: using the combined value for the key causes it to remount when value changes
             // Doing this to optimize fetch calls.

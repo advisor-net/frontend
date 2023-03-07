@@ -13,6 +13,7 @@ const loadNetworkSearch = async () => {
 
 // NOTE: not awaiting here to take advantage of defer behavior
 // https://reactrouter.com/en/main/guides/deferred
-export const loadNetworkSearchData = async ({ params, request }) => defer({
-  data: loadNetworkSearch({ params, request }),
-});
+export const loadNetworkSearchData = async ({ params, request }) =>
+  defer({
+    data: loadNetworkSearch({ params, request }),
+  });

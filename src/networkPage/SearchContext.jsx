@@ -1,9 +1,9 @@
-import {createContext, useCallback, useContext, useMemo, useState} from 'react';
-import {transformSortByTableStateToParamsObj, updateURLfromParamsObj} from './utils';
+import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { transformSortByTableStateToParamsObj, updateURLfromParamsObj } from './utils';
 
 const SearchContext = createContext(null);
 
-const SearchProvider = ({children}) => {
+const SearchProvider = ({ children }) => {
   // params object will be an object of { field: { filterType: 'in', value: [1, 2] } }
   // TODO: turn this into a class object? and then consolidate all the utils and constants logic...
   //  probably a really good idea
@@ -12,13 +12,13 @@ const SearchProvider = ({children}) => {
   const [paramsObj, _setParamsObj] = useState([]);
   const [results, setResults] = useState({});
 
-  const setParamsObj = useCallback(nextParamsObj => {
+  const setParamsObj = useCallback((nextParamsObj) => {
     _setParamsObj(nextParamsObj);
     updateURLfromParamsObj(nextParamsObj);
   }, []);
 
   const setOrderBy = useCallback(
-    sortByTableState => {
+    (sortByTableState) => {
       const nextParamsObj = transformSortByTableStateToParamsObj(sortByTableState, paramsObj);
       setParamsObj(nextParamsObj);
     },

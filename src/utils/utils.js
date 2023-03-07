@@ -5,12 +5,12 @@ const splitIntoChunks = (size, aryIn) => {
   return result;
 };
 
-export const addCommas = numString => {
+export const addCommas = (numString) => {
   const numberString = numString.toString();
   const chunks = splitIntoChunks(3, parseInt(numberString, 10).toString().split('').reverse());
 
   const beforeDecimal = chunks
-    .map(chunk => chunk.join(''))
+    .map((chunk) => chunk.join(''))
     .join(',')
     .split('')
     .reverse()
@@ -44,7 +44,7 @@ export const formatPrice = (priceIn, decimalPlaces = 0, disableRounding = false)
     } else {
       // truncate at decimal places
       price = (Math.floor(price * 10 ** decimalPlaces + 0.00001) / 10 ** decimalPlaces).toFixed(
-        decimalPlaces
+        decimalPlaces,
       );
     }
   } else {
@@ -60,25 +60,25 @@ export const formatPrice = (priceIn, decimalPlaces = 0, disableRounding = false)
 
 const abbreviationFormatter = (num, digits) => {
   const lookup = [
-    {value: 1, symbol: ''},
-    {value: 1e3, symbol: 'k'},
-    {value: 1e6, symbol: 'M'},
-    {value: 1e9, symbol: 'B'},
-    {value: 1e12, symbol: 'T'},
-    {value: 1e15, symbol: 'P'},
-    {value: 1e18, symbol: 'E'},
+    { value: 1, symbol: '' },
+    { value: 1e3, symbol: 'k' },
+    { value: 1e6, symbol: 'M' },
+    { value: 1e9, symbol: 'B' },
+    { value: 1e12, symbol: 'T' },
+    { value: 1e15, symbol: 'P' },
+    { value: 1e18, symbol: 'E' },
   ];
   const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
   const item = lookup
     .slice()
     .reverse()
-    .find(obj => num >= obj.value);
+    .find((obj) => num >= obj.value);
   return item ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol : '0';
 };
 
 export const formatLargePrice = (num, digits) => `$${abbreviationFormatter(num, digits)}`;
 
-export const formatDateString = inputDays => {
+export const formatDateString = (inputDays) => {
   const years = Math.floor(inputDays / 365);
   const remainingDays = inputDays - years * 365;
   const months = Math.floor(remainingDays / 30);
@@ -102,7 +102,7 @@ export const formatDateString = inputDays => {
   return strings.join(', ') || '0 days';
 };
 
-export const toCamelCase = str => {
+export const toCamelCase = (str) => {
   if (str.includes(' ')) return str;
   return str.replace(/^([A-Z])|[\s-_](\w)/g, (match, p1, p2) => {
     if (p2) return p2.toUpperCase();
@@ -110,20 +110,19 @@ export const toCamelCase = str => {
   });
 };
 
-export const keysToCamelCase = obj =>
-  Object.keys(obj).reduce((acc, key) => {
-    acc[toCamelCase(key)] = obj[key];
-    return acc;
-  }, {});
+export const keysToCamelCase = (obj) => Object.keys(obj).reduce((acc, key) => {
+  acc[toCamelCase(key)] = obj[key];
+  return acc;
+}, {});
 
-export const isPrimitiveType = a => Object(a) !== a;
+export const isPrimitiveType = (a) => Object(a) !== a;
 
-export const keysToCamelCaseDeep = obj => {
+export const keysToCamelCaseDeep = (obj) => {
   if (isPrimitiveType(obj)) {
     return obj;
   }
   if (Array.isArray(obj)) {
-    return obj.map(thing => keysToCamelCaseDeep(thing));
+    return obj.map((thing) => keysToCamelCaseDeep(thing));
   }
   return Object.keys(obj).reduce((acc, key) => {
     if (key === 'overrides' || key === 'metadata') {
@@ -137,7 +136,7 @@ export const keysToCamelCaseDeep = obj => {
   }, {});
 };
 
-export const toSnakeCase = str => {
+export const toSnakeCase = (str) => {
   if (str.includes(' ')) return str;
   return str.replace(/^([A-Z])|([A-Z])|[\s-](\w)/g, (match, p1, p2, p3) => {
     if (p2) return `_${p2.toLowerCase()}`;
@@ -146,19 +145,18 @@ export const toSnakeCase = str => {
   });
 };
 
-export const keysToSnakeCase = obj =>
-  Object.keys(obj).reduce((acc, key) => {
-    acc[toSnakeCase(key)] = obj[key];
-    return acc;
-  }, {});
+export const keysToSnakeCase = (obj) => Object.keys(obj).reduce((acc, key) => {
+  acc[toSnakeCase(key)] = obj[key];
+  return acc;
+}, {});
 
-export const keysToSnakeCaseDeep = obj => {
+export const keysToSnakeCaseDeep = (obj) => {
   // base case -- primitives
   if (Object(obj) !== obj) {
     return obj;
   }
   if (obj instanceof Array) {
-    return obj.map(element => keysToSnakeCaseDeep(element));
+    return obj.map((element) => keysToSnakeCaseDeep(element));
   }
   return Object.keys(obj).reduce((acc, key) => {
     if (key === 'overrides' || key === 'metadata') {
@@ -172,7 +170,6 @@ export const keysToSnakeCaseDeep = obj => {
   }, {});
 };
 
-export const removeSpaces = str => str.replace(/\s/g, '');
+export const removeSpaces = (str) => str.replace(/\s/g, '');
 
-export const flipObject = data =>
-  Object.fromEntries(Object.entries(data).map(([key, value]) => [value, key]));
+export const flipObject = (data) => Object.fromEntries(Object.entries(data).map(([key, value]) => [value, key]));

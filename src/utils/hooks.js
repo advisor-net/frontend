@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /*
 For React Hooks in React 18, a useEffect() with zero dependencies will be executed twice.
@@ -7,7 +7,7 @@ Here is a custom hook that can be used instead of useEffect(), with zero depende
 that will give the old (pre React 18) behaviour back, i.e. it works around the breaking change.
 https://blog.ag-grid.com/avoiding-react-18-double-mount/
 */
-export const useEffectOnce = effect => {
+export const useEffectOnce = (effect) => {
   const effectFn = useRef(effect);
   const destroyFn = useRef();
   const effectCalled = useRef(false);
@@ -26,7 +26,7 @@ export const useEffectOnce = effect => {
     }
 
     // this forces one render after the effect is run
-    setVal(val => val + 1);
+    setVal((val) => val + 1);
 
     return () => {
       // if the comp didn't render since the useEffect was called,

@@ -1,14 +1,14 @@
-import {defer, redirect} from 'react-router-dom';
+import { defer, redirect } from 'react-router-dom';
 
 import profileService from '../services/profileService';
-import {getUserUuid} from '../utils/session';
+import { getUserUuid } from '../utils/session';
 
 // TODO: improve the data flow here (from login as well), where the page handles the URL nonsense
 // I want each page to be independent and pull the resources it needs
 // could set up a loader for the protected route that fetches the profile information for each
 // page...that is probably a good way to do things
 // may lead to a lot of redundant fetches...but we will optimize that later
-const loadProfile = async ({params}) => {
+const loadProfile = async ({ params }) => {
   const loggedInUuid = getUserUuid();
   const isOwnProfile = loggedInUuid === params.uuid;
 
@@ -23,7 +23,7 @@ const loadProfile = async ({params}) => {
 
   try {
     const response = await profileService.getUserDetails(params.uuid);
-    return {user: response, isOwnProfile};
+    return { user: response, isOwnProfile };
   } catch (error) {
     console.error(error);
     return {};
@@ -32,7 +32,6 @@ const loadProfile = async ({params}) => {
 
 // NOTE: not awaiting here to take advantage of defer behavior
 // https://reactrouter.com/en/main/guides/deferred
-export const loadProfileData = async ({params}) =>
-  defer({
-    data: loadProfile({params}),
-  });
+export const loadProfileData = async ({ params }) => defer({
+  data: loadProfile({ params }),
+});

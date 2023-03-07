@@ -7,10 +7,7 @@ const splitIntoChunks = (size, aryIn) => {
 
 export const addCommas = (numString) => {
   const numberString = numString.toString();
-  const chunks = splitIntoChunks(
-    3,
-    parseInt(numberString, 10).toString().split('').reverse(),
-  );
+  const chunks = splitIntoChunks(3, parseInt(numberString, 10).toString().split('').reverse());
 
   const beforeDecimal = chunks
     .map((chunk) => chunk.join(''))
@@ -27,11 +24,7 @@ export const addCommas = (numString) => {
   return `${beforeDecimal}.${numberString.slice(decimalIndex + 1)}`;
 };
 
-export const formatPrice = (
-  priceIn,
-  decimalPlaces = 0,
-  disableRounding = false,
-) => {
+export const formatPrice = (priceIn, decimalPlaces = 0, disableRounding = false) => {
   if (priceIn == null || Number.isNaN(priceIn)) {
     return '';
   }
@@ -50,10 +43,9 @@ export const formatPrice = (
       price = price.toFixed(decimalPlaces);
     } else {
       // truncate at decimal places
-      price = (
-        Math.floor(price * 10 ** decimalPlaces + 0.00001)
-        / 10 ** decimalPlaces
-      ).toFixed(decimalPlaces);
+      price = (Math.floor(price * 10 ** decimalPlaces + 0.00001) / 10 ** decimalPlaces).toFixed(
+        decimalPlaces,
+      );
     }
   } else {
     // eslint-disable-next-line no-bitwise
@@ -81,9 +73,7 @@ const abbreviationFormatter = (num, digits) => {
     .slice()
     .reverse()
     .find((obj) => num >= obj.value);
-  return item
-    ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol
-    : '0';
+  return item ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol : '0';
 };
 
 export const formatLargePrice = (num, digits) => `$${abbreviationFormatter(num, digits)}`;
@@ -138,9 +128,7 @@ export const keysToCamelCaseDeep = (obj) => {
     if (key === 'overrides' || key === 'metadata') {
       acc[key] = obj[key];
     } else if (typeof obj[key] === 'object') {
-      acc[key.includes(' ') ? key : toCamelCase(key)] = keysToCamelCaseDeep(
-        obj[key],
-      );
+      acc[key.includes(' ') ? key : toCamelCase(key)] = keysToCamelCaseDeep(obj[key]);
     } else {
       acc[key.includes(' ') ? key : toCamelCase(key)] = obj[key];
     }
@@ -174,9 +162,7 @@ export const keysToSnakeCaseDeep = (obj) => {
     if (key === 'overrides' || key === 'metadata') {
       acc[key] = obj[key];
     } else if (obj[key] instanceof Object) {
-      acc[key.includes(' ') ? key : toSnakeCase(key)] = keysToSnakeCaseDeep(
-        obj[key],
-      );
+      acc[key.includes(' ') ? key : toSnakeCase(key)] = keysToSnakeCaseDeep(obj[key]);
     } else {
       acc[key.includes(' ') ? key : toSnakeCase(key)] = obj[key];
     }
@@ -186,8 +172,4 @@ export const keysToSnakeCaseDeep = (obj) => {
 
 export const removeSpaces = (str) => str.replace(/\s/g, '');
 
-export const flipObject = (data) => Object.fromEntries(
-  Object
-    .entries(data)
-    .map(([key, value]) => [value, key]),
-);
+export const flipObject = (data) => Object.fromEntries(Object.entries(data).map(([key, value]) => [value, key]));

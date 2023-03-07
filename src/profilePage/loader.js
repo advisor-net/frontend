@@ -15,7 +15,8 @@ const loadProfile = async ({ params }) => {
   if (!loggedInUuid) {
     // redirect to login
     return redirect('/login');
-  } if (!isOwnProfile) {
+  }
+  if (!isOwnProfile) {
     // redirect to network profile since you are not viewing your own profile
     return redirect(`/network/p/${params.uuid}`);
   }

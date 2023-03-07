@@ -1,10 +1,7 @@
-import { Suspense } from 'react';
-import { useLoaderData, Await } from 'react-router-dom';
+import {Suspense} from 'react';
+import {useLoaderData, Await} from 'react-router-dom';
 
-import { 
-  Flex,
-  Heading,
-} from '@chakra-ui/react';
+import {Flex, Heading} from '@chakra-ui/react';
 import SearchResults from './SearchResults';
 import SearchProvider from './SearchContext';
 import Filters from './Filters';
@@ -13,14 +10,14 @@ const NetworkSearchComponent = () => {
   return (
     <Flex direction="column" padding="4" gap="2" width="100%">
       <Heading size="lg">Find people</Heading>
-      <Filters/>
-      <SearchResults/>
+      <Filters />
+      <SearchResults />
     </Flex>
-  )
+  );
 };
 
 const NetworkSearch = () => {
-  const { data } = useLoaderData();
+  const {data} = useLoaderData();
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -31,6 +28,6 @@ const NetworkSearch = () => {
       </Await>
     </Suspense>
   );
-}
+};
 
 export default NetworkSearch;

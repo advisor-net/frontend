@@ -1,13 +1,12 @@
+import {Select} from 'chakra-react-select';
+import {FILTER_TYPE_LABELS} from '../constants';
 
-import { Select } from "chakra-react-select";
-import { FILTER_TYPE_LABELS } from "../constants";
-
-const FilterTypeSelector = ({ allowedTypes, onChange, size = "sm", isDisabled = false, value }) => {
-  const options = allowedTypes.map((filterType) => {
-    return { value: filterType, label: FILTER_TYPE_LABELS[filterType]};
+const FilterTypeSelector = ({allowedTypes, onChange, size = 'sm', isDisabled = false, value}) => {
+  const options = allowedTypes.map(filterType => {
+    return {value: filterType, label: FILTER_TYPE_LABELS[filterType]};
   });
   return (
-    <Select 
+    <Select
       placeholder="Select filter type"
       onChange={onChange}
       options={options}
@@ -15,7 +14,7 @@ const FilterTypeSelector = ({ allowedTypes, onChange, size = "sm", isDisabled = 
       isDisabled={isDisabled}
       value={value}
     />
-  )
+  );
 };
 
 export default FilterTypeSelector;

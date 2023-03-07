@@ -1,14 +1,14 @@
-import { Text } from '@chakra-ui/react';
+import {Text} from '@chakra-ui/react';
 
-import { createBrowserRouter } from 'react-router-dom';
+import {createBrowserRouter} from 'react-router-dom';
 import LoginPage from './loginPage/LoginPage';
 import ProfilePage from './profilePage/ProfilePage';
 import NetworkSearch from './networkPage/NetworkSearch';
 import AccountSettings from './accountSettings/AccountSettings';
 import ProtectedLayout from './ProtectedLayout';
 
-import { loadProfileData } from './profilePage/loader';
-import { loadNetworkSearchData } from './networkPage/loader';
+import {loadProfileData} from './profilePage/loader';
+import {loadNetworkSearchData} from './networkPage/loader';
 
 const ErrorPage = () => (
   <Text>ERROR...must have been the night shift....sorry budddddyyyyyyyyyyy</Text>
@@ -20,42 +20,42 @@ const NoMatch = () => {
 
 const router = createBrowserRouter([
   {
-    path: "/login",
+    path: '/login',
     element: <LoginPage />,
     errorElement: <ErrorPage />,
   },
   {
-    path: "/",
+    path: '/',
     element: <ProtectedLayout />,
     errorElement: <ErrorPage />,
     children: [
       {
         index: true,
-        path: "/profile/:uuid",
+        path: '/profile/:uuid',
         loader: loadProfileData,
         element: <ProfilePage />,
         errorElement: <ErrorPage />,
       },
       {
-        path: "/network",
+        path: '/network',
         loader: loadNetworkSearchData,
         element: <NetworkSearch />,
         errorElement: <ErrorPage />,
       },
       {
-        path: "/account",
+        path: '/account',
         element: <AccountSettings />,
         errorElement: <ErrorPage />,
       },
       {
-        path: "*",
-        element: <NoMatch />
+        path: '*',
+        element: <NoMatch />,
       },
     ],
   },
   {
-    path: "*",
-    element: <NoMatch />
+    path: '*',
+    element: <NoMatch />,
   },
 ]);
 

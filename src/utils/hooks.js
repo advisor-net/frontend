@@ -1,6 +1,4 @@
-import {
-  useEffect, useRef, useState,
-} from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /*
 For React Hooks in React 18, a useEffect() with zero dependencies will be executed twice.
@@ -33,10 +31,14 @@ export const useEffectOnce = (effect) => {
     return () => {
       // if the comp didn't render since the useEffect was called,
       // we know it's the dummy React cycle
-      if (!rendered.current) { return; }
+      if (!rendered.current) {
+        return;
+      }
 
       // otherwise this is not a dummy destroy, so call the destroy func
-      if (destroyFn.current) { destroyFn.current(); }
+      if (destroyFn.current) {
+        destroyFn.current();
+      }
     };
   }, []);
 };

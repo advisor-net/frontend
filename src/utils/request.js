@@ -4,12 +4,7 @@ import { getJwtToken, getRefreshToken, setJwtToken } from './session';
 const isObject = (a) => typeof a === 'object' && a !== null;
 
 const prepareFetch = ({
-  url,
-  token,
-  params,
-  method,
-  additionalRequestParams,
-  signal,
+  url, token, params, method, additionalRequestParams, signal,
 }) => {
   const fetchUrl = url.includes('://') ? url : process.env.REACT_APP_API_URL + url;
   let credentials = {};
@@ -99,11 +94,7 @@ FetchError.prototype = Object.create(Error.prototype);
 FetchError.prototype.constructor = FetchError;
 
 const performRequest = async ({
-  url,
-  params,
-  method,
-  additionalRequestParams,
-  signal,
+  url, params, method, additionalRequestParams, signal,
 }) => {
   const token = getJwtToken();
   const { fetchUrl, fetchOptions } = prepareFetch({
@@ -137,15 +128,15 @@ const performRequest = async ({
 };
 
 const requestFunc = async ({
-  url,
-  params,
-  method,
-  additionalRequestParams,
-  signal,
+  url, params, method, additionalRequestParams, signal,
 }) => {
   try {
     return await performRequest({
-      url, params, method, additionalRequestParams, signal,
+      url,
+      params,
+      method,
+      additionalRequestParams,
+      signal,
     });
   } catch (error) {
     // check for authentication woes
@@ -164,9 +155,7 @@ const requestFunc = async ({
         setJwtToken(refreshTokenResponse.access);
       } catch (refreshTokenError) {
         if (refreshTokenError.statusCode === 401) {
-          window.location.replace(
-            `${window.location.origin}/login`,
-          );
+          window.location.replace(`${window.location.origin}/login`);
           return null;
         }
         throw refreshTokenError;
@@ -175,7 +164,11 @@ const requestFunc = async ({
       // now retry the request that got us here
       // let this throw if it fails since we have handled authentication
       const refreshedResponse = await performRequest({
-        url, params, method, additionalRequestParams, signal,
+        url,
+        params,
+        method,
+        additionalRequestParams,
+        signal,
       });
       return refreshedResponse;
     }
@@ -185,10 +178,7 @@ const requestFunc = async ({
 
 const request = {
   get: async ({
-    url,
-    params = {},
-    additionalRequestParams = {},
-    signal = null,
+    url, params = {}, additionalRequestParams = {}, signal = null,
   }) => requestFunc({
     url,
     params,
@@ -198,10 +188,7 @@ const request = {
   }),
 
   post: async ({
-    url,
-    params = {},
-    additionalRequestParams = {},
-    signal = null,
+    url, params = {}, additionalRequestParams = {}, signal = null,
   }) => requestFunc({
     url,
     params,
@@ -211,10 +198,7 @@ const request = {
   }),
 
   patch: async ({
-    url,
-    params = {},
-    additionalRequestParams = {},
-    signal = null,
+    url, params = {}, additionalRequestParams = {}, signal = null,
   }) => requestFunc({
     url,
     params,
@@ -224,10 +208,7 @@ const request = {
   }),
 
   delete: async ({
-    url,
-    params = {},
-    additionalRequestParams = {},
-    signal = null,
+    url, params = {}, additionalRequestParams = {}, signal = null,
   }) => requestFunc({
     url,
     params,

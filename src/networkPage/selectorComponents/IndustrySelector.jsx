@@ -21,6 +21,7 @@ const IndustrySelector = ({ onChange, size = "sm" }) => {
       loadOptions={promiseOptions}
       onChange={onChange}
       size={size}
+      isMulti={true}
     />
   )
 };

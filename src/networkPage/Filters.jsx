@@ -6,6 +6,7 @@ import {
   FILTERABLE_FIELD_KEYS, 
   FILTERABLE_FIELD_LABELS, 
   FILTER_TYPE_LABELS,
+  FILTER_TYPES,
   FIELD_FILTER_OPTIONS,
   CURRENT_PFM_LABELS,
   GENDER_LABELS,
@@ -38,20 +39,37 @@ import {
   NumberInputField,
 } from "@chakra-ui/react";
 
-const getInputForm = (filterField, onChange) => {
+const getInputForm = (filterField, filterType, onChange) => {
   switch (filterField) {
     case FILTERABLE_FIELD_KEYS.CURRENT_PFM:
-      return <CurrentPFMSelector onChange={(option) => onChange(option.value)}/>
+      return <CurrentPFMSelector onChange={(options) => onChange(options.map((option) => option.value))}/>
     case FILTERABLE_FIELD_KEYS.GENDER:
-      return <GenderSelector onChange={(option) => onChange(option.value)}/>
+      return <GenderSelector onChange={(options) => onChange(options.map((option) => option.value))}/>
     case FILTERABLE_FIELD_KEYS.INDUSTRY:
-      return <IndustrySelector onChange={(option) => onChange(option.value)}/>
+      return <IndustrySelector onChange={(options) => onChange(options.map((option) => option.value))}/>
     case FILTERABLE_FIELD_KEYS.JOB_TITLE:
-      return <JobTitleSelector onChange={(option) => onChange(option.value)}/>
+      return <JobTitleSelector onChange={(options) => onChange(options.map((option) => option.value))}/>
     case FILTERABLE_FIELD_KEYS.METRO:
-      return <MetroAreaSelector onChange={(option) => onChange(option.value)}/>
+      return <MetroAreaSelector onChange={(options) => onChange(options.map((option) => option.value))}/>
     case FILTERABLE_FIELD_KEYS.LEVEL:
-      return <LevelSelector onChange={(option) => onChange(option.value)}/>
+      {
+        switch (filterType) {
+          case FILTER_TYPES.IN:
+            return (
+              <LevelSelector 
+                isMulti={true}
+                onChange={(options) => onChange(options.map((option) => option.value))}
+              />
+            )
+          default:
+            return (
+              <LevelSelector 
+                isMulti={false}
+                onChange={(option) => onChange(option.value)}
+              />
+            )
+        }
+      }
     default:
       return (
         <NumberInput onChange={(valueAsString) => onChange(parseFloat(valueAsString))} size="sm">
@@ -64,9 +82,15 @@ const getInputForm = (filterField, onChange) => {
 const getRenderableValueString = async (filterField, filterInfo) => {
   switch (filterField) {
     case FILTERABLE_FIELD_KEYS.CURRENT_PFM:
-      return CURRENT_PFM_LABELS[filterInfo.value]
+      {
+        const stringArr = filterInfo.value.toString().split(',');
+        return stringArr.map((value) => CURRENT_PFM_LABELS[value]).join(', ');
+      }
     case FILTERABLE_FIELD_KEYS.GENDER:
-      return GENDER_LABELS[filterInfo.value]
+      {
+        const stringArr = filterInfo.value.toString().split(',');
+        return stringArr.map((value) => GENDER_LABELS[value]).join(', ');
+      }
     case FILTERABLE_FIELD_KEYS.INDUSTRY:
       {
         const searchParams = new URLSearchParams();
@@ -91,28 +115,40 @@ const getRenderableValueString = async (filterField, filterInfo) => {
         const response = await networkService.metroAreaSearch(query);
         return (response?.results || []).map((obj) => obj.name).join(', ');
       }
+    // TODO: bug here with changing an existing filter
     case FILTERABLE_FIELD_KEYS.LEVEL:
-      return JOB_LEVEL_LABELS[filterInfo.value]
+      {
+        switch (filterInfo.filterType) {
+          case FILTER_TYPES.IN:
+            {
+              const stringArr = filterInfo.value.toString().split(',');
+              return stringArr.map((idValue) => JOB_LEVEL_LABELS[parseInt(idValue)]).join(', ');
+            }
+          default:
+            return JOB_LEVEL_LABELS[filterInfo.value];
+        }
+      }
+    case FILTERABLE_FIELD_KEYS.AGE:
+      return filterInfo.value;
     default:
-      return formatLargePrice(filterInfo.value, 3)
+      return formatLargePrice(filterInfo.value, 3);
   }
 };
 
 const ReadOnlyFilter = ({ filterKey, filterInfo, onRemove }) => {
   const [renderValue, setRenderValue] = useState(null);
 
-  // on mount, fetch the field display values if we need to
+  // onMount, fetch the field display values...
+  // NOTE: we are forcing the component to remount by being clever with the key value
   useEffectOnce(() => {
     const getRenderValue = async () => {
       return await getRenderableValueString(filterKey, filterInfo);
     };
-    if (renderValue === null) {
-      console.log('efect running', filterKey)
-      getRenderValue().then((resp) => {
-        setRenderValue(resp);
-      });
-    }
-  }, [renderValue, setRenderValue, filterKey, filterInfo?.value])
+    getRenderValue().then((resp) => {
+      setRenderValue(resp);
+    });
+  }, [setRenderValue, filterKey, filterInfo])
+
   return (
     <Flex border="1px solid #ddd" borderRadius={4} padding={2} alignItems="center">
       <Text marginRight={1}>{`${FILTERABLE_FIELD_LABELS[filterKey]} ${FILTER_TYPE_LABELS[filterInfo.filterType]}`}</Text>
@@ -170,9 +206,11 @@ const Filters = () => {
       <Flex alignItems="center" flexWrap="wrap" gap={2}>
         {Object.entries(paramsObj).map(([filterKey, filterInfo]) => {
           if (Object.values(FILTERABLE_FIELD_KEYS).includes(filterKey)) {
+            // NOTE: using the filterinfo in the value causes it to remount when value changes
+            // Doing this to optimize fetch calls
             return (
               <ReadOnlyFilter 
-                key={filterKey} 
+                key={filterKey.toString() + filterInfo.value.toString()} 
                 filterKey={filterKey} 
                 filterInfo={filterInfo}
                 onRemove={handleRemoveFilter}
@@ -201,7 +239,7 @@ const Filters = () => {
               value={newFilterType}
             />
             {newFilterField && newFilterType && (
-              <Box>{getInputForm(newFilterField.value, handleFilterValueChange)}</Box>
+              <Box>{getInputForm(newFilterField.value, newFilterType.value, handleFilterValueChange)}</Box>
             )}
             <Button 
               colorScheme="teal"

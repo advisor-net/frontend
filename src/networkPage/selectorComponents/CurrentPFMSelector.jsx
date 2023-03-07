@@ -11,6 +11,7 @@ const CurrentPFMSelector = ({ onChange, size = "sm" }) => {
       onChange={onChange}
       options={OPTIONS}
       size={size}
+      isMulti={true}
     />
   )
 };

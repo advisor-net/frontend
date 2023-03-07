@@ -21,6 +21,7 @@ const MetroAreaSelector = ({ onChange, size = "sm" }) => {
       loadOptions={promiseOptions}
       onChange={onChange}
       size={size}
+      isMulti={true}
     />
   )
 };

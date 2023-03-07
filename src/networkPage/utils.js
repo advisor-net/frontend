@@ -75,17 +75,18 @@ const extractFilterInfoFromParamKey = (paramKey, paramValue) => {
 };
 
 export const transformUrlToParamsObj = (url) => {
-  const newParamsObj = {};
+  const newParamsObj = [];
   if (url.search) {
     for (const [paramKey, paramValue] of url.searchParams.entries()) {
       const {
         isValid, filterKey, filterType,
       } = extractFilterInfoFromParamKey(paramKey, paramValue);
       if (isValid) {
-        newParamsObj[filterKey] = {
+        newParamsObj.push({
+          filterKey,
           filterType,
           value: paramValue,
-        };
+        });
       }
     }
   }
@@ -95,17 +96,18 @@ export const transformUrlToParamsObj = (url) => {
 // TODO: list in and making this all work properly
 export const transformParamsObjToUrl = (paramsObj) => {
   const searchParams = new URLSearchParams();
-  for (const [filterKey, info] of Object.entries(paramsObj)) {
+  for (const param of paramsObj) {
+    const { filterKey, filterType, value } = param;
     let paramKey;
     if (Object.values(OTHER_QUERY_PARAM_KEYS).includes(filterKey)) {
       paramKey = `${filterKey}`;
     } else {
-      paramKey = info.filterType === FILTER_TYPES.EQUAL
+      paramKey = filterType === FILTER_TYPES.EQUAL
         ? `${filterKey}`
-        : `${filterKey}${SEPARATOR}${info.filterType}`;
+        : `${filterKey}${SEPARATOR}${filterType}`;
     }
 
-    searchParams.set(paramKey, info.value);
+    searchParams.set(paramKey, value);
   }
   return searchParams;
 };
@@ -118,87 +120,107 @@ export const updateURLfromParamsObj = (paramsObj) => {
 };
 
 export const getDefaultParamsForProfile = (profile) => {
+  const defaultParams = [];
   if (profile) {
-    const defaultParams = {
-      [OTHER_QUERY_PARAM_KEYS.ORDER_BY]: {
+    if (profile.metro) {
+      defaultParams.push({
+        filterKey: FILTERABLE_FIELD_KEYS.METRO,
+        filterType: FILTER_TYPES.IN,
+        value: [profile.metro.id],
+      });
+    }
+    defaultParams.push(
+      {
+        filterKey: OTHER_QUERY_PARAM_KEYS.ORDER_BY,
         filterType: OTHER_QUERY_PARAM_KEYS.ORDER_BY,
         value: `${NEGATIVE_ORDERING}${FILTERABLE_FIELD_KEYS.NET_WORTH}`,
       },
-      [OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER]: {
-        filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER, value: 1,
+      {
+        filterKey: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER,
+        filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER,
+        value: 1,
       },
-      [OTHER_QUERY_PARAM_KEYS.PAGE_SIZE]: {
-        filterType: OTHER_QUERY_PARAM_KEYS.PAGE_SIZE, value: 20,
+      {
+        filterKey: OTHER_QUERY_PARAM_KEYS.PAGE_SIZE,
+        filterType: OTHER_QUERY_PARAM_KEYS.PAGE_SIZE,
+        value: 20,
       },
-    };
-    if (profile.metro) {
-      defaultParams[FILTERABLE_FIELD_KEYS.METRO] = {
-        filterType: FILTER_TYPES.IN, value: [profile.metro.id],
-      };
-    }
-    return defaultParams;
+    );
   }
-  return {};
+  return defaultParams;
 };
 
 export const transformParamsObjToSortByTableState = (paramsObj) => {
-  if (OTHER_QUERY_PARAM_KEYS.ORDER_BY in paramsObj) {
-    const paramInfo = paramsObj[OTHER_QUERY_PARAM_KEYS.ORDER_BY];
-    if (paramInfo) {
-      const validity = getOrderByParamValidity(paramInfo.value);
-      if (validity.isValid) {
-        return [{
-          id: FIELD_TO_TABLE_ACCESSOR[validity.fieldValue],
-          desc: validity.isDesc,
-        }];
-      }
+  const paramInfo = paramsObj.find((param) => param.filterKey === OTHER_QUERY_PARAM_KEYS.ORDER_BY);
+  if (paramInfo) {
+    const validity = getOrderByParamValidity(paramInfo.value);
+    if (validity.isValid) {
+      return [{
+        id: FIELD_TO_TABLE_ACCESSOR[validity.fieldValue],
+        desc: validity.isDesc,
+      }];
     }
   }
   return [];
 };
 
 export const transformSortByTableStateToParamsObj = (sortByTableState, previousParamsObj) => {
-  const nextParamsObj = { ...previousParamsObj };
   if (sortByTableState.length === 0) {
-    delete nextParamsObj[OTHER_QUERY_PARAM_KEYS.ORDER_BY];
-  } else {
-    const sorter = sortByTableState[0];
-    const filterKey = TABLE_ACCESSOR_TO_FIELD[sorter.id];
-    nextParamsObj[OTHER_QUERY_PARAM_KEYS.ORDER_BY] = {
-      filterType: OTHER_QUERY_PARAM_KEYS.ORDER_BY,
-      value: sorter.desc ? `${NEGATIVE_ORDERING}${filterKey}` : filterKey,
-    };
+    return previousParamsObj.filter(
+      (option) => option.filterKey !== OTHER_QUERY_PARAM_KEYS.ORDER_BY
+    );
   }
-  return nextParamsObj;
+  const sorter = sortByTableState[0];
+  const filterKey = TABLE_ACCESSOR_TO_FIELD[sorter.id];
+  return previousParamsObj.concat([{
+    filterKey: OTHER_QUERY_PARAM_KEYS.ORDER_BY,
+    filterType: OTHER_QUERY_PARAM_KEYS.ORDER_BY,
+    value: sorter.desc ? `${NEGATIVE_ORDERING}${filterKey}` : filterKey,
+  }]);
 };
 
-export const addFilterToParams = (filterField, filterType, fieldValue, previousParams) => {
-  const nextParamsObj = { ...previousParams };
-  nextParamsObj[filterField] = { filterType, value: fieldValue };
-  return nextParamsObj;
-};
+export const addFilterToParams = (
+  filterField, filterType, fieldValue, previousParams
+) => previousParams.filter(
+  (option) => !(option.filterKey === filterField && option.filterType === filterType),
+).concat([{
+  filterKey: filterField,
+  filterType,
+  value: fieldValue,
+}]);
 
-export const removeFilterFromParams = (filterField, previousParams) => {
-  const nextParamsObj = { ...previousParams };
-  delete nextParamsObj[filterField];
-  return nextParamsObj;
-};
+export const removeFilterFromParams = (
+  filterField, filterType, previousParams
+) => previousParams.filter(
+  (option) => !(option.filterKey === filterField && option.filterType === filterType)
+);
 
 export const updatePageQueryInParams = (nextPage, previousParams) => {
-  const nextParamsObj = { ...previousParams };
-  nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER] = { 
-    filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER, value: nextPage 
-  };
-  return nextParamsObj;
+  const nextParams = previousParams.filter(
+    (option) => option.filterKey !== OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER,
+  );
+  return nextParams.concat([{
+    filterKey: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER,
+    filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER,
+    value: nextPage,
+  }]);
 };
 
 export const updatePageSizeInParams = (nextPageSize, nextPageNumber, previousParams) => {
-  const nextParamsObj = { ...previousParams };
-  nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_SIZE] = { 
-    filterType: OTHER_QUERY_PARAM_KEYS.PAGE_SIZE, value: nextPageSize 
-  };
-  nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER] = { 
-    filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER, value: nextPageNumber 
-  };
-  return nextParamsObj;
+  const nextParams = previousParams.filter(
+    (option) => option.filterKey !== OTHER_QUERY_PARAM_KEYS.PAGE_SIZE
+    && option.filterKey !== OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER,
+  );
+  return nextParams.concat([
+    {
+      filterKey: OTHER_QUERY_PARAM_KEYS.PAGE_SIZE,
+      filterType: OTHER_QUERY_PARAM_KEYS.PAGE_SIZE,
+      value: nextPageSize,
+    },
+    {
+      filterKey: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER,
+      filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER,
+      value: nextPageNumber,
+    },
+  ]);
 };

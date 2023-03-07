@@ -90,22 +90,22 @@ const getInputForm = (filterField, filterType, onChange) => {
   }
 };
 
-const getRenderableValueString = async (filterField, filterInfo) => {
+const getRenderableValueString = async (filterField, filterType, value) => {
   switch (filterField) {
     case FILTERABLE_FIELD_KEYS.CURRENT_PFM:
       {
-        const stringArr = filterInfo.value.toString().split(',');
+        const stringArr = value.toString().split(',');
         return stringArr.map((value) => CURRENT_PFM_LABELS[value]).join(', ');
       }
     case FILTERABLE_FIELD_KEYS.GENDER:
       {
-        const stringArr = filterInfo.value.toString().split(',');
+        const stringArr = value.toString().split(',');
         return stringArr.map((value) => GENDER_LABELS[value]).join(', ');
       }
     case FILTERABLE_FIELD_KEYS.INDUSTRY:
       {
         const searchParams = new URLSearchParams();
-        searchParams.set('id__in', filterInfo.value)
+        searchParams.set('id__in', value)
         const query = searchParams.toString();
         const response = await networkService.industrySearch(query);
         return (response?.results || []).map((obj) => obj.name).join(', ');
@@ -113,7 +113,7 @@ const getRenderableValueString = async (filterField, filterInfo) => {
     case FILTERABLE_FIELD_KEYS.JOB_TITLE:
       {
         const searchParams = new URLSearchParams();
-        searchParams.set('id__in', filterInfo.value)
+        searchParams.set('id__in', value)
         const query = searchParams.toString();
         const response = await networkService.jobTitleSearch(query);
         return (response?.results || []).map((obj) => obj.name).join(', ');
@@ -121,7 +121,7 @@ const getRenderableValueString = async (filterField, filterInfo) => {
     case FILTERABLE_FIELD_KEYS.METRO:
       {
         const searchParams = new URLSearchParams();
-        searchParams.set('id__in', filterInfo.value)
+        searchParams.set('id__in', value)
         const query = searchParams.toString();
         const response = await networkService.metroAreaSearch(query);
         return (response?.results || []).map((obj) => obj.name).join(', ');
@@ -129,50 +129,50 @@ const getRenderableValueString = async (filterField, filterInfo) => {
     // TODO: bug here with changing an existing filter
     case FILTERABLE_FIELD_KEYS.LEVEL:
       {
-        switch (filterInfo.filterType) {
+        switch (filterType) {
           case FILTER_TYPES.IN:
             {
-              const stringArr = filterInfo.value.toString().split(',');
+              const stringArr = value.toString().split(',');
               return stringArr.map((idValue) => JOB_LEVEL_LABELS[parseInt(idValue)]).join(', ');
             }
           default:
-            return JOB_LEVEL_LABELS[filterInfo.value];
+            return JOB_LEVEL_LABELS[value];
         }
       }
     case FILTERABLE_FIELD_KEYS.AGE:
-      return filterInfo.value;
+      return value;
     default:
-      return formatLargePrice(filterInfo.value, 3);
+      return formatLargePrice(value, 3);
   }
 };
 
 // TODO: style up the menu when we have internet connection
-const ReadOnlyFilter = ({ filterKey, filterInfo, onRemove, onEdit }) => {
+const ReadOnlyFilter = ({ filterKey, filterType, value, onRemove, onEdit }) => {
   const [renderValue, setRenderValue] = useState(null);
 
   // onMount, fetch the field display values...
   // NOTE: we are forcing the component to remount by being clever with the key value
   useEffectOnce(() => {
     const getRenderValue = async () => {
-      return await getRenderableValueString(filterKey, filterInfo);
+      return await getRenderableValueString(filterKey, filterType, value);
     };
     getRenderValue().then((resp) => {
       setRenderValue(resp);
     });
-  }, [setRenderValue, filterKey, filterInfo])
+  }, [setRenderValue, filterKey, filterType, value])
 
   return (
     <Flex border="1px solid #ddd" borderRadius={4} padding={2} alignItems="center">
-      <Text marginRight={1}>{`${FILTERABLE_FIELD_LABELS[filterKey]} ${FILTER_TYPE_LABELS[filterInfo.filterType]}`}</Text>
+      <Text marginRight={1}>{`${FILTERABLE_FIELD_LABELS[filterKey]} ${FILTER_TYPE_LABELS[filterType]}`}</Text>
       {renderValue !== null && <Text>{renderValue}</Text>}
       <Menu>
         <MenuButton marginLeft={2} size="sm">
           ...
         </MenuButton>
         <MenuList>
-          <MenuItem onClick={() => onEdit(filterKey, filterInfo)}>Edit</MenuItem>
+          <MenuItem onClick={() => onEdit(filterKey, filterType, value)}>Edit</MenuItem>
           <MenuDivider/>
-          <MenuItem onClick={() => onRemove(filterKey)}>Remove</MenuItem>
+          <MenuItem onClick={() => onRemove(filterKey, filterType)}>Remove</MenuItem>
         </MenuList>
       </Menu>
     </Flex>
@@ -216,15 +216,16 @@ const Filters = () => {
     }
   };
 
-  const handleRemoveFilter = (filterKey) => {
-    const nextParamsObj = removeFilterFromParams(filterKey, paramsObj);
+  const handleRemoveFilter = (filterKey, filterType) => {
+    const nextParamsObj = removeFilterFromParams(filterKey, filterType, paramsObj);
     setParamsObj(nextParamsObj);
   };
 
-  const handleEditFilter = (filterKey, filterInfo) => {
-    handleRemoveFilter(filterKey);
+  // TODO: set default value
+  const handleEditFilter = (filterKey, filterType, value) => {
+    handleRemoveFilter(filterKey, filterType);
     setNewFilterField({ value: filterKey, label: FILTERABLE_FIELD_LABELS[filterKey] });
-    setNewFilterType({ value: filterInfo.filterType, label: FILTER_TYPE_LABELS[filterInfo.filterType] });
+    setNewFilterType({ value: filterType, label: FILTER_TYPE_LABELS[filterType] });
     setNewFilterValue(null);
     onOpen();
   };
@@ -233,15 +234,16 @@ const Filters = () => {
     <Flex border="1px solid #ddd"  borderRadius={4} padding={2} direction="column">
       <Heading size="md" marginBottom={2}>Filters</Heading>
       <Flex alignItems="center" flexWrap="wrap" gap={2}>
-        {Object.entries(paramsObj).map(([filterKey, filterInfo]) => {
+        {paramsObj.map(({ filterKey, filterType, value }) => {
           if (Object.values(FILTERABLE_FIELD_KEYS).includes(filterKey)) {
-            // NOTE: using the filterinfo in the value causes it to remount when value changes
-            // Doing this to optimize fetch calls
+            // NOTE: using the combined value for the key causes it to remount when value changes
+            // Doing this to optimize fetch calls.
             return (
               <ReadOnlyFilter 
-                key={filterKey.toString() + filterInfo.value.toString()} 
+                key={filterKey.toString() + filterType.toString() + value.toString()} 
                 filterKey={filterKey} 
-                filterInfo={filterInfo}
+                filterType={filterType}
+                value={value}
                 onRemove={handleRemoveFilter}
                 onEdit={handleEditFilter}
               />

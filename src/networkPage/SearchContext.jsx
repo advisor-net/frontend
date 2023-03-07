@@ -12,7 +12,9 @@ const SearchProvider = ({ children }) => {
   // params object will be an object of { field: { filterType: 'in', value: [1, 2] } }
   // TODO: turn this into a class object? and then consolidate all the utils and constants logic...
   //  probably a really good idea
-  const [paramsObj, _setParamsObj] = useState({});
+  //  Could create an object keyed in with each filter key + filter option pair as well if we need
+  //  more performance...which is unlikely
+  const [paramsObj, _setParamsObj] = useState([]);
   const [results, setResults] = useState({});
 
   const setParamsObj = useCallback(

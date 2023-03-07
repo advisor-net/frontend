@@ -5,19 +5,19 @@ import {
   useSearchContext, 
   getDefaultParamsForProfile, 
   updateURLfromParamsObj, 
-  constructURLParams, 
+  transformParamsObjToUrl, 
   FIELD_KEYS, 
-  JOB_LEVEL_MAP, 
-  FIELD_TO_ACCESSOR, 
-  OTHER_PARAM_KEYS,
-  FILTER_TYPES,
-  getSortByTableStateFromParamsObject, 
-  getParamsObjFromUrl,
+  FIELD_TO_TABLE_ACCESSOR, 
+  OTHER_QUERY_PARAM_KEYS,
+  transformParamsObjToSortByTableState, 
+  transformUrlToParamsObj,
 } from "./SearchContext";
 import { useQuery } from "react-query";
 import networkService from "../services/networkService";
 import Pagination from 'rc-pagination';
 import { Select } from "chakra-react-select";
+
+import { JOB_LEVEL_LABELS } from "./selectorComponents/LevelSelector";
 
 import { formatLargePrice } from "../utils/utils";
 
@@ -126,46 +126,46 @@ const SearchResults = () => {
     () => [
       {
         Header: "Handle",
-        accessor: FIELD_TO_ACCESSOR[FIELD_KEYS.HANDLE],
+        accessor: FIELD_TO_TABLE_ACCESSOR[FIELD_KEYS.HANDLE],
         disableSortBy: true,
       },
       {
         Header: "Location",
-        accessor: FIELD_TO_ACCESSOR[FIELD_KEYS.METRO],
+        accessor: FIELD_TO_TABLE_ACCESSOR[FIELD_KEYS.METRO],
       },
       {
         Header: "Industry",
-        accessor: FIELD_TO_ACCESSOR[FIELD_KEYS.INDUSTRY],
+        accessor: FIELD_TO_TABLE_ACCESSOR[FIELD_KEYS.INDUSTRY],
       },
       {
         Header: "Job title",
-        accessor: FIELD_TO_ACCESSOR[FIELD_KEYS.JOB_TITLE],
+        accessor: FIELD_TO_TABLE_ACCESSOR[FIELD_KEYS.JOB_TITLE],
       },
       {
         Header: "Age",
-        accessor: FIELD_TO_ACCESSOR[FIELD_KEYS.AGE],
+        accessor: FIELD_TO_TABLE_ACCESSOR[FIELD_KEYS.AGE],
       },
       {
         Header: "Level",
-        accessor: FIELD_TO_ACCESSOR[FIELD_KEYS.LEVEL],
-        Cell: ({ value }) => JOB_LEVEL_MAP[value] || '',
+        accessor: FIELD_TO_TABLE_ACCESSOR[FIELD_KEYS.LEVEL],
+        Cell: ({ value }) => JOB_LEVEL_LABELS[value] || '',
         sortDescFirst: true,
       },
       {
         Header: "Net worth",
-        accessor: FIELD_TO_ACCESSOR[FIELD_KEYS.NET_WORTH],
+        accessor: FIELD_TO_TABLE_ACCESSOR[FIELD_KEYS.NET_WORTH],
         Cell: ({ value }) => formatLargePrice(value, 3),
         sortDescFirst: true,
       },
       {
         Header: "Annual income",
-        accessor: FIELD_TO_ACCESSOR[FIELD_KEYS.INC_TOTAL_ANNUAL],
+        accessor: FIELD_TO_TABLE_ACCESSOR[FIELD_KEYS.INC_TOTAL_ANNUAL],
         Cell: ({ value }) => formatLargePrice(value, 3),
         sortDescFirst: true,
       },
       {
         Header: "Housing",
-        accessor: FIELD_TO_ACCESSOR[FIELD_KEYS.EXP_HOUSING],
+        accessor: FIELD_TO_TABLE_ACCESSOR[FIELD_KEYS.EXP_HOUSING],
         Cell: ({ value }) => formatLargePrice(value, 3),
         sortDescFirst: true,
       }
@@ -188,44 +188,40 @@ const SearchResults = () => {
       updateURLfromParamsObj(defaultParams);
     }
     const nextUrl = new URL(window.location);
-    const nextParamsObj = getParamsObjFromUrl(nextUrl);
-    const initialSortBy = getSortByTableStateFromParamsObject(nextParamsObj);
+    const nextParamsObj = transformUrlToParamsObj(nextUrl);
+    const initialSortBy = transformParamsObjToSortByTableState(nextParamsObj);
     
     setInitialTableSortBy(initialSortBy);
 
     // TODO: page protection
-    if (nextParamsObj[OTHER_PARAM_KEYS.PAGE_NUMBER]) {
-      setCurrentPage(parseInt(nextParamsObj[OTHER_PARAM_KEYS.PAGE_NUMBER].value));
+    if (nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER]) {
+      setCurrentPage(parseInt(nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER].value));
     }
-    if (nextParamsObj[OTHER_PARAM_KEYS.PAGE_SIZE]) {
-      const paramInfo = nextParamsObj[OTHER_PARAM_KEYS.PAGE_SIZE];
+    if (nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_SIZE]) {
+      const paramInfo = nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_SIZE];
       setCurrentPageSize({ value: parseInt(paramInfo.value), label: paramInfo.value.toString() });
     }
     
     setParamsObj(nextParamsObj);
-    updateURLfromParamsObj(nextParamsObj);
-  }, [profile, setParamsObj, getDefaultParamsForProfile, updateURLfromParamsObj])
+  }, [profile, setParamsObj])
 
   const handlePageChange = (nextPage) => {
     setCurrentPage(nextPage);
     const nextParamsObj = { ...paramsObj };
-    nextParamsObj[OTHER_PARAM_KEYS.PAGE_NUMBER] = { filterType: FILTER_TYPES.PAGE_NUMBER, value: nextPage };
+    nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER] = { filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER, value: nextPage };
     setParamsObj(nextParamsObj);
-    updateURLfromParamsObj(nextParamsObj);
   };
 
   const handlePageSizeChange = (nextPageSize) => {
     setCurrentPageSize(nextPageSize);
     setCurrentPage(1);
     const nextParamsObj = { ...paramsObj };
-    nextParamsObj[OTHER_PARAM_KEYS.PAGE_SIZE] = { filterType: FILTER_TYPES.PAGE_SIZE, value: nextPageSize.value };
-    nextParamsObj[OTHER_PARAM_KEYS.PAGE_NUMBER] = { filterType: FILTER_TYPES.PAGE_NUMBER, value: 1 };
+    nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_SIZE] = { filterType: OTHER_QUERY_PARAM_KEYS.PAGE_SIZE, value: nextPageSize.value };
+    nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER] = { filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER, value: 1 };
     setParamsObj(nextParamsObj);
-    updateURLfromParamsObj(nextParamsObj);
   };
 
-  // TODO: improve the search triggering
-  const searchParams = constructURLParams(paramsObj);
+  const searchParams = transformParamsObjToUrl(paramsObj);
   const searchString = searchParams.toString();
 
   const searchResult = useQuery(
@@ -255,14 +251,19 @@ const SearchResults = () => {
   // TODO: figure out scrolling state and heights...same problem we had with similar parts
   //  took what i have from here: https://github.com/chakra-ui/chakra-ui/discussions/4380
   return (
-    <Flex direction="column" border="1px solid #ddd" width="100%" padding="2" flexGrow={1}>
-      <Heading size="lg">{`Results (${results.count || 0})`}</Heading>
+    <Flex direction="column" border="1px solid #ddd" borderRadius={4} padding={2} flexGrow={1}>
+      <Heading size="md">{`Results (${results.count || 0})`}</Heading>
       {Boolean(initialTableSortBy) && (
         <Box overflowY="auto" maxHeight="60vh" borderRadius={4} marginTop={2} marginBottom={2}>
-          <CustomTable columns={columns} data={results} setOrderBy={setOrderBy} initialSortBy={initialTableSortBy} />
+          <CustomTable 
+            columns={columns} 
+            data={results} 
+            setOrderBy={setOrderBy} 
+            initialSortBy={initialTableSortBy} 
+          />
         </Box>
       )}
-      <Flex alignSelf="center" justifyContent="center" alignItems="center">
+      <Flex alignSelf="center" justifyContent="center" alignItems="center" gap={2}>
         <Pagination 
           onChange={handlePageChange} 
           current={currentPage} 

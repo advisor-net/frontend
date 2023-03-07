@@ -171,3 +171,34 @@ export const transformSortByTableStateToParamsObj = (sortByTableState, previousP
   }
   return nextParamsObj;
 };
+
+export const addFilterToParams = (filterField, filterType, fieldValue, previousParams) => {
+  const nextParamsObj = { ...previousParams };
+  nextParamsObj[filterField] = { filterType, value: fieldValue };
+  return nextParamsObj;
+};
+
+export const removeFilterFromParams = (filterField, previousParams) => {
+  const nextParamsObj = { ...previousParams };
+  delete nextParamsObj[filterField];
+  return nextParamsObj;
+};
+
+export const updatePageQueryInParams = (nextPage, previousParams) => {
+  const nextParamsObj = { ...previousParams };
+  nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER] = { 
+    filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER, value: nextPage 
+  };
+  return nextParamsObj;
+};
+
+export const updatePageSizeInParams = (nextPageSize, nextPageNumber, previousParams) => {
+  const nextParamsObj = { ...previousParams };
+  nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_SIZE] = { 
+    filterType: OTHER_QUERY_PARAM_KEYS.PAGE_SIZE, value: nextPageSize 
+  };
+  nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER] = { 
+    filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER, value: nextPageNumber 
+  };
+  return nextParamsObj;
+};

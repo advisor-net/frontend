@@ -10,6 +10,8 @@ const SearchContext = createContext(null);
 
 const SearchProvider = ({ children }) => {
   // params object will be an object of { field: { filterType: 'in', value: [1, 2] } }
+  // TODO: turn this into a class object? and then consolidate all the utils and constants logic...
+  //  probably a really good idea
   const [paramsObj, _setParamsObj] = useState({});
   const [results, setResults] = useState({});
 

@@ -13,6 +13,8 @@ import {
   transformParamsObjToUrl, 
   transformParamsObjToSortByTableState, 
   transformUrlToParamsObj,
+  updatePageQueryInParams,
+  updatePageSizeInParams,
 } from './utils';
 import {
   FIELD_KEYS, 
@@ -209,17 +211,14 @@ const SearchResults = () => {
 
   const handlePageChange = (nextPage) => {
     setCurrentPage(nextPage);
-    const nextParamsObj = { ...paramsObj };
-    nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER] = { filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER, value: nextPage };
+    const nextParamsObj = updatePageQueryInParams(nextPage, paramsObj);
     setParamsObj(nextParamsObj);
   };
 
   const handlePageSizeChange = (nextPageSize) => {
     setCurrentPageSize(nextPageSize);
     setCurrentPage(1);
-    const nextParamsObj = { ...paramsObj };
-    nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_SIZE] = { filterType: OTHER_QUERY_PARAM_KEYS.PAGE_SIZE, value: nextPageSize.value };
-    nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER] = { filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER, value: 1 };
+    const nextParamsObj = updatePageSizeInParams(nextPageSize.value, 1, paramsObj);
     setParamsObj(nextParamsObj);
   };
 

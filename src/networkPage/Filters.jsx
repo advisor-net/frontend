@@ -13,6 +13,11 @@ import {
   JOB_LEVEL_LABELS,
 } from "./constants";
 
+import { 
+  addFilterToParams,
+  removeFilterFromParams,
+} from './utils';
+
 import { useSearchContext } from './SearchContext';
 
 import { formatLargePrice } from "../utils/utils";
@@ -37,7 +42,13 @@ import {
   useDisclosure,
   NumberInput,
   NumberInputField,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuDivider,
 } from "@chakra-ui/react";
+import {  } from "@chakra-ui/icons";
 
 const getInputForm = (filterField, filterType, onChange) => {
   switch (filterField) {
@@ -135,7 +146,8 @@ const getRenderableValueString = async (filterField, filterInfo) => {
   }
 };
 
-const ReadOnlyFilter = ({ filterKey, filterInfo, onRemove }) => {
+// TODO: style up the menu when we have internet connection
+const ReadOnlyFilter = ({ filterKey, filterInfo, onRemove, onEdit }) => {
   const [renderValue, setRenderValue] = useState(null);
 
   // onMount, fetch the field display values...
@@ -153,7 +165,16 @@ const ReadOnlyFilter = ({ filterKey, filterInfo, onRemove }) => {
     <Flex border="1px solid #ddd" borderRadius={4} padding={2} alignItems="center">
       <Text marginRight={1}>{`${FILTERABLE_FIELD_LABELS[filterKey]} ${FILTER_TYPE_LABELS[filterInfo.filterType]}`}</Text>
       {renderValue !== null && <Text>{renderValue}</Text>}
-      <Button marginLeft={2} onClick={() => onRemove(filterKey)} size="sm">Remove</Button>
+      <Menu>
+        <MenuButton marginLeft={2} size="sm">
+          ...
+        </MenuButton>
+        <MenuList>
+          <MenuItem onClick={() => onEdit(filterKey, filterInfo)}>Edit</MenuItem>
+          <MenuDivider/>
+          <MenuItem onClick={() => onRemove(filterKey)}>Remove</MenuItem>
+        </MenuList>
+      </Menu>
     </Flex>
   );
 };
@@ -183,8 +204,9 @@ const Filters = () => {
 
   const handleAddFilter = () => {
     if (newFilterField && newFilterType && newFilterValue !== null) {
-      const nextParamsObj = { ...paramsObj };
-      nextParamsObj[newFilterField.value] = { filterType: newFilterType.value, value: newFilterValue };
+      const nextParamsObj = addFilterToParams(
+        newFilterField.value, newFilterType.value, newFilterValue, paramsObj
+      );
       setParamsObj(nextParamsObj);
 
       setNewFilterField(null);
@@ -195,9 +217,16 @@ const Filters = () => {
   };
 
   const handleRemoveFilter = (filterKey) => {
-    const nextParamsObj = { ...paramsObj };
-    delete nextParamsObj[filterKey];
+    const nextParamsObj = removeFilterFromParams(filterKey, paramsObj);
     setParamsObj(nextParamsObj);
+  };
+
+  const handleEditFilter = (filterKey, filterInfo) => {
+    handleRemoveFilter(filterKey);
+    setNewFilterField({ value: filterKey, label: FILTERABLE_FIELD_LABELS[filterKey] });
+    setNewFilterType({ value: filterInfo.filterType, label: FILTER_TYPE_LABELS[filterInfo.filterType] });
+    setNewFilterValue(null);
+    onOpen();
   };
 
   return (
@@ -214,6 +243,7 @@ const Filters = () => {
                 filterKey={filterKey} 
                 filterInfo={filterInfo}
                 onRemove={handleRemoveFilter}
+                onEdit={handleEditFilter}
               />
             )
           } else {

@@ -276,6 +276,7 @@ const SearchResults = () => {
           value={pageSize}
           onChange={handlePageSizeChange}
           options={PAGE_SIZE_OPTIONS}
+          menuPlacement="auto"
         />
       </Flex>
     </Flex>

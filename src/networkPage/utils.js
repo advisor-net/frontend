@@ -119,6 +119,26 @@ export const updateURLfromParamsObj = (paramsObj) => {
   window.history.replaceState(null, '', url.toString());
 };
 
+export const getEmptyParams = () => {
+  return [
+    {
+      filterKey: OTHER_QUERY_PARAM_KEYS.ORDER_BY,
+      filterType: OTHER_QUERY_PARAM_KEYS.ORDER_BY,
+      value: `${NEGATIVE_ORDERING}${FILTERABLE_FIELD_KEYS.NET_WORTH}`,
+    },
+    {
+      filterKey: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER,
+      filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER,
+      value: 1,
+    },
+    {
+      filterKey: OTHER_QUERY_PARAM_KEYS.PAGE_SIZE,
+      filterType: OTHER_QUERY_PARAM_KEYS.PAGE_SIZE,
+      value: 20,
+    },
+  ];
+};
+
 export const getDefaultParamsForProfile = (profile) => {
   const defaultParams = [];
   if (profile) {
@@ -129,23 +149,7 @@ export const getDefaultParamsForProfile = (profile) => {
         value: [profile.metro.id],
       });
     }
-    defaultParams.push(
-      {
-        filterKey: OTHER_QUERY_PARAM_KEYS.ORDER_BY,
-        filterType: OTHER_QUERY_PARAM_KEYS.ORDER_BY,
-        value: `${NEGATIVE_ORDERING}${FILTERABLE_FIELD_KEYS.NET_WORTH}`,
-      },
-      {
-        filterKey: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER,
-        filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER,
-        value: 1,
-      },
-      {
-        filterKey: OTHER_QUERY_PARAM_KEYS.PAGE_SIZE,
-        filterType: OTHER_QUERY_PARAM_KEYS.PAGE_SIZE,
-        value: 20,
-      },
-    );
+    defaultParams.push(...getEmptyParams());
   }
   return defaultParams;
 };
@@ -167,7 +171,7 @@ export const transformParamsObjToSortByTableState = (paramsObj) => {
 export const transformSortByTableStateToParamsObj = (sortByTableState, previousParamsObj) => {
   if (sortByTableState.length === 0) {
     return previousParamsObj.filter(
-      (option) => option.filterKey !== OTHER_QUERY_PARAM_KEYS.ORDER_BY
+      (option) => option.filterKey !== OTHER_QUERY_PARAM_KEYS.ORDER_BY,
     );
   }
   const sorter = sortByTableState[0];
@@ -180,7 +184,7 @@ export const transformSortByTableStateToParamsObj = (sortByTableState, previousP
 };
 
 export const addFilterToParams = (
-  filterField, filterType, fieldValue, previousParams
+  filterField, filterType, fieldValue, previousParams,
 ) => previousParams.filter(
   (option) => !(option.filterKey === filterField && option.filterType === filterType),
 ).concat([{
@@ -190,9 +194,9 @@ export const addFilterToParams = (
 }]);
 
 export const removeFilterFromParams = (
-  filterField, filterType, previousParams
+  filterField, filterType, previousParams,
 ) => previousParams.filter(
-  (option) => !(option.filterKey === filterField && option.filterType === filterType)
+  (option) => !(option.filterKey === filterField && option.filterType === filterType),
 );
 
 export const updatePageQueryInParams = (nextPage, previousParams) => {

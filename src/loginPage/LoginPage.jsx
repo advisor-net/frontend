@@ -1,19 +1,10 @@
 
 import { useLocation, useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
-import { setJwtToken, setRefreshToken, setUserUuid, setMetroArea} from '../utils/session';
+import { setJwtToken, setMetroArea, setRefreshToken, setUserUuid } from '../utils/session';
 
 import {
-  Flex,
-  Box,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  Input,
-  Checkbox,
-  Button,
-  VStack,
-  HStack,
+  Box, Button, Checkbox, Flex, FormControl, FormErrorMessage, FormLabel, Heading, HStack, Input, VStack
 } from '@chakra-ui/react';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -67,7 +58,8 @@ const LoginPage = () => {
           </HStack>
         </Flex>
       </Box>
-      <Flex alignItems="center" justifyContent="center" >
+      <Flex alignItems="center" justifyContent="center" direction="column" padding={4}>
+        <Heading>Welcome to Advisor</Heading>
         <Box bg="white" p={6} rounded="md" w={64}>
           <Formik
             initialValues={{
@@ -115,11 +107,11 @@ const LoginPage = () => {
                     as={Checkbox}
                     id="rememberMe"
                     name="rememberMe"
-                    colorScheme="purple"
+                    colorScheme="teal"
                   >
                     Remember me?
                   </Field>
-                  <Button type="submit" colorScheme="purple" width="full" isLoading={isSubmitting}>
+                  <Button type="submit" colorScheme="teal" width="full" isLoading={isSubmitting}>
                     Login
                   </Button>
                 </VStack>

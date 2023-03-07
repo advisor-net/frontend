@@ -2,53 +2,39 @@ import { useState } from "react";
 
 import { useEffectOnce } from "../utils/hooks";
 
-import {  
-  FILTERABLE_FIELD_KEYS, 
-  FILTERABLE_FIELD_LABELS, 
-  FILTER_TYPE_LABELS,
-  FILTER_TYPES,
-  FIELD_FILTER_OPTIONS,
-  CURRENT_PFM_LABELS,
-  GENDER_LABELS,
-  JOB_LEVEL_LABELS,
+import {
+  CURRENT_PFM_LABELS, FIELD_FILTER_OPTIONS, FILTERABLE_FIELD_KEYS,
+  FILTERABLE_FIELD_LABELS, FILTER_TYPES, FILTER_TYPE_LABELS, GENDER_LABELS,
+  JOB_LEVEL_LABELS
 } from "./constants";
 
-import { 
+import {
   addFilterToParams,
   removeFilterFromParams,
+  getEmptyParams,
 } from './utils';
 
 import { useSearchContext } from './SearchContext';
 
 import { formatLargePrice } from "../utils/utils";
 
+import CurrentPFMSelector from "./selectorComponents/CurrentPFMSelector";
 import FilterFieldSelector from "./selectorComponents/FilterFieldSelector";
 import FilterTypeSelector from "./selectorComponents/FilterTypeSelector";
-import CurrentPFMSelector from "./selectorComponents/CurrentPFMSelector";
 import GenderSelector from "./selectorComponents/GenderSelector";
 import IndustrySelector from "./selectorComponents/IndustrySelector";
 import JobTitleSelector from "./selectorComponents/JobTitleSelector";
-import MetroAreaSelector from "./selectorComponents/MetroAreaSelector";
 import LevelSelector from "./selectorComponents/LevelSelector";
+import MetroAreaSelector from "./selectorComponents/MetroAreaSelector";
 
 import networkService from "../services/networkService";
 
+import { HamburgerIcon } from "@chakra-ui/icons";
 import {
-  Flex,
-  Box,
-  Heading,
-  Text,
-  Button,
-  useDisclosure,
-  NumberInput,
-  NumberInputField,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuDivider,
+  Box, Button, Flex, Heading, Menu,
+  MenuButton, MenuDivider, MenuItem, MenuList, NumberInput,
+  NumberInputField, Text, useDisclosure
 } from "@chakra-ui/react";
-import {  } from "@chakra-ui/icons";
 
 const getInputForm = (filterField, filterType, onChange) => {
   switch (filterField) {
@@ -146,7 +132,6 @@ const getRenderableValueString = async (filterField, filterType, value) => {
   }
 };
 
-// TODO: style up the menu when we have internet connection
 const ReadOnlyFilter = ({ filterKey, filterType, value, onRemove, onEdit }) => {
   const [renderValue, setRenderValue] = useState(null);
 
@@ -166,13 +151,13 @@ const ReadOnlyFilter = ({ filterKey, filterType, value, onRemove, onEdit }) => {
       <Text marginRight={1}>{`${FILTERABLE_FIELD_LABELS[filterKey]} ${FILTER_TYPE_LABELS[filterType]}`}</Text>
       {renderValue !== null && <Text>{renderValue}</Text>}
       <Menu>
-        <MenuButton marginLeft={2} size="sm">
-          ...
+        <MenuButton as={Button} marginLeft={2} size="sm">
+          <HamburgerIcon/>
         </MenuButton>
         <MenuList>
           <MenuItem onClick={() => onEdit(filterKey, filterType, value)}>Edit</MenuItem>
           <MenuDivider/>
-          <MenuItem onClick={() => onRemove(filterKey, filterType)}>Remove</MenuItem>
+          <MenuItem onClick={() => onRemove(filterKey, filterType)} color="red">Remove</MenuItem>
         </MenuList>
       </Menu>
     </Flex>
@@ -222,12 +207,16 @@ const Filters = () => {
   };
 
   // TODO: set default value
-  const handleEditFilter = (filterKey, filterType, value) => {
+  const handleEditFilter = (filterKey, filterType, _) => {
     handleRemoveFilter(filterKey, filterType);
     setNewFilterField({ value: filterKey, label: FILTERABLE_FIELD_LABELS[filterKey] });
     setNewFilterType({ value: filterType, label: FILTER_TYPE_LABELS[filterType] });
     setNewFilterValue(null);
     onOpen();
+  };
+
+  const handleClearFilters = () => {
+    setParamsObj(getEmptyParams());
   };
 
   return (
@@ -258,7 +247,7 @@ const Filters = () => {
             onClick={onOpen}
             size="sm" 
           >
-            + Add new
+            + Add filter
           </Button>
         )}
         {isOpen && (
@@ -284,6 +273,13 @@ const Filters = () => {
             <Button onClick={onClose} size="sm">Cancel</Button>
           </Flex>
         )}
+        <Button 
+          colorScheme="red"
+          onClick={handleClearFilters}
+          size="sm" 
+        >
+          Clear filters
+        </Button>
       </Flex>
     </Flex>
   )

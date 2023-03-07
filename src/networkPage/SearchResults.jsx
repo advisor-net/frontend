@@ -1,23 +1,25 @@
 import { useMemo, useEffect, useState } from "react";
 import { useTable, useSortBy } from "react-table";
 import { useAsyncValue } from "react-router-dom";
-import { 
-  useSearchContext, 
-  getDefaultParamsForProfile, 
-  updateURLfromParamsObj, 
-  transformParamsObjToUrl, 
-  FIELD_KEYS, 
-  FIELD_TO_TABLE_ACCESSOR, 
-  OTHER_QUERY_PARAM_KEYS,
-  transformParamsObjToSortByTableState, 
-  transformUrlToParamsObj,
-} from "./SearchContext";
+import { useSearchContext } from "./SearchContext";
 import { useQuery } from "react-query";
 import networkService from "../services/networkService";
 import Pagination from 'rc-pagination';
 import { Select } from "chakra-react-select";
 
-import { JOB_LEVEL_LABELS } from "./selectorComponents/LevelSelector";
+import { 
+  getDefaultParamsForProfile, 
+  updateURLfromParamsObj, 
+  transformParamsObjToUrl, 
+  transformParamsObjToSortByTableState, 
+  transformUrlToParamsObj,
+} from './utils';
+import {
+  FIELD_KEYS, 
+  FIELD_TO_TABLE_ACCESSOR, 
+  OTHER_QUERY_PARAM_KEYS,
+  JOB_LEVEL_LABELS,
+} from './constants';
 
 import { formatLargePrice } from "../utils/utils";
 

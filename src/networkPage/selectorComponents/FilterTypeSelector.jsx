@@ -1,6 +1,6 @@
 
 import { Select } from "chakra-react-select";
-import { FILTER_TYPE_LABELS } from "../SearchContext";
+import { FILTER_TYPE_LABELS } from "../constants";
 
 const FilterTypeSelector = ({ allowedTypes, onChange, size = "sm", isDisabled = false, value }) => {
   const options = allowedTypes.map((filterType) => {

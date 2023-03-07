@@ -1,23 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-import { 
-  useSearchContext, 
+import {  
   FILTERABLE_FIELD_KEYS, 
   FILTERABLE_FIELD_LABELS, 
   FILTER_TYPE_LABELS,
   FIELD_FILTER_OPTIONS,
-} from "./SearchContext";
+  CURRENT_PFM_LABELS,
+  GENDER_LABELS,
+  JOB_LEVEL_LABELS,
+} from "./constants";
+
+import { useSearchContext } from './SearchContext';
 
 import { formatLargePrice } from "../utils/utils";
 
 import FilterFieldSelector from "./selectorComponents/FilterFieldSelector";
 import FilterTypeSelector from "./selectorComponents/FilterTypeSelector";
-import CurrentPFMSelector, { CURRENT_PFM_LABELS } from "./selectorComponents/CurrentPFMSelector";
-import GenderSelector, { GENDER_LABELS } from "./selectorComponents/GenderSelector";
+import CurrentPFMSelector from "./selectorComponents/CurrentPFMSelector";
+import GenderSelector from "./selectorComponents/GenderSelector";
 import IndustrySelector from "./selectorComponents/IndustrySelector";
 import JobTitleSelector from "./selectorComponents/JobTitleSelector";
 import MetroAreaSelector from "./selectorComponents/MetroAreaSelector";
-import LevelSelector, { JOB_LEVEL_LABELS } from "./selectorComponents/LevelSelector";
+import LevelSelector from "./selectorComponents/LevelSelector";
 
 import {
   Flex,

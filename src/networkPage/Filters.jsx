@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 
+import { useEffectOnce } from "../utils/hooks";
+
 import {  
   FILTERABLE_FIELD_KEYS, 
   FILTERABLE_FIELD_LABELS, 
@@ -22,6 +24,8 @@ import IndustrySelector from "./selectorComponents/IndustrySelector";
 import JobTitleSelector from "./selectorComponents/JobTitleSelector";
 import MetroAreaSelector from "./selectorComponents/MetroAreaSelector";
 import LevelSelector from "./selectorComponents/LevelSelector";
+
+import networkService from "../services/networkService";
 
 import {
   Flex,
@@ -57,29 +61,63 @@ const getInputForm = (filterField, onChange) => {
   }
 };
 
-const getValueRenderer = (filterField, filterInfo) => {
+const getRenderableValueString = async (filterField, filterInfo) => {
   switch (filterField) {
     case FILTERABLE_FIELD_KEYS.CURRENT_PFM:
-      return <Text>{CURRENT_PFM_LABELS[filterInfo.value]}</Text>
+      return CURRENT_PFM_LABELS[filterInfo.value]
     case FILTERABLE_FIELD_KEYS.GENDER:
-      return <Text>{GENDER_LABELS[filterInfo.value]}</Text>
+      return GENDER_LABELS[filterInfo.value]
     case FILTERABLE_FIELD_KEYS.INDUSTRY:
+      {
+        const searchParams = new URLSearchParams();
+        searchParams.set('id__in', filterInfo.value)
+        const query = searchParams.toString();
+        const response = await networkService.industrySearch(query);
+        return (response?.results || []).map((obj) => obj.name).join(', ');
+      }
     case FILTERABLE_FIELD_KEYS.JOB_TITLE:
+      {
+        const searchParams = new URLSearchParams();
+        searchParams.set('id__in', filterInfo.value)
+        const query = searchParams.toString();
+        const response = await networkService.jobTitleSearch(query);
+        return (response?.results || []).map((obj) => obj.name).join(', ');
+      }
     case FILTERABLE_FIELD_KEYS.METRO:
-      // TODO
-      return <Text>{filterInfo.value}</Text>
+      {
+        const searchParams = new URLSearchParams();
+        searchParams.set('id__in', filterInfo.value)
+        const query = searchParams.toString();
+        const response = await networkService.metroAreaSearch(query);
+        return (response?.results || []).map((obj) => obj.name).join(', ');
+      }
     case FILTERABLE_FIELD_KEYS.LEVEL:
-      return <Text>{JOB_LEVEL_LABELS[filterInfo.value]}</Text>
+      return JOB_LEVEL_LABELS[filterInfo.value]
     default:
-      return <Text>{formatLargePrice(filterInfo.value, 3)}</Text>
+      return formatLargePrice(filterInfo.value, 3)
   }
-}
+};
 
 const ReadOnlyFilter = ({ filterKey, filterInfo, onRemove }) => {
+  const [renderValue, setRenderValue] = useState(null);
+  const [isFetchingValue, setisFetchingValue] = useState(false);
+
+  // on mount, fetch the field display values if we need to
+  useEffectOnce(() => {
+    const getRenderValue = async () => {
+      return await getRenderableValueString(filterKey, filterInfo);
+    };
+    if (renderValue === null) {
+      console.log('efect running', filterKey)
+      getRenderValue().then((resp) => {
+        setRenderValue(resp);
+      });
+    }
+  }, [renderValue, setRenderValue, filterKey, filterInfo?.value])
   return (
     <Flex border="1px solid #ddd" borderRadius={4} padding={2} alignItems="center">
       <Text marginRight={1}>{`${FILTERABLE_FIELD_LABELS[filterKey]} ${FILTER_TYPE_LABELS[filterInfo.filterType]}`}</Text>
-      {getValueRenderer(filterKey, filterInfo)}
+      {renderValue !== null && <Text>{renderValue}</Text>}
       <Button marginLeft={2} onClick={() => onRemove(filterKey)} size="sm">Remove</Button>
     </Flex>
   );

@@ -17,9 +17,9 @@ const getOrderByParamValidity = (paramValue) => {
   }
   if (Object.values(FILTERABLE_FIELD_KEYS).includes(validatedValue)) {
     return {
-      isValid: true, 
-      filterType: OTHER_QUERY_PARAM_KEYS.ORDER_BY, 
-      isDesc, 
+      isValid: true,
+      filterType: OTHER_QUERY_PARAM_KEYS.ORDER_BY,
+      isDesc,
       fieldValue: validatedValue,
     };
   }
@@ -38,8 +38,8 @@ const extractFilterInfoFromParamKey = (paramKey, paramValue) => {
 
   if (paramKey === OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER) {
     if (Number.isInteger(parseFloat(paramValue))) {
-      return { 
-        isValid: true, filterKey: paramKey, filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER 
+      return {
+        isValid: true, filterKey: paramKey, filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER,
       };
     }
     return { isValid: false, filterKey: null, filterType: null };
@@ -78,7 +78,7 @@ export const transformUrlToParamsObj = (url) => {
   const newParamsObj = {};
   if (url.search) {
     for (const [paramKey, paramValue] of url.searchParams.entries()) {
-      const { 
+      const {
         isValid, filterKey, filterType,
       } = extractFilterInfoFromParamKey(paramKey, paramValue);
       if (isValid) {
@@ -120,20 +120,20 @@ export const updateURLfromParamsObj = (paramsObj) => {
 export const getDefaultParamsForProfile = (profile) => {
   if (profile) {
     const defaultParams = {
-      [OTHER_QUERY_PARAM_KEYS.ORDER_BY]: { 
-        filterType: OTHER_QUERY_PARAM_KEYS.ORDER_BY, 
-        value: `${NEGATIVE_ORDERING}${FILTERABLE_FIELD_KEYS.NET_WORTH}` 
+      [OTHER_QUERY_PARAM_KEYS.ORDER_BY]: {
+        filterType: OTHER_QUERY_PARAM_KEYS.ORDER_BY,
+        value: `${NEGATIVE_ORDERING}${FILTERABLE_FIELD_KEYS.NET_WORTH}`,
       },
-      [OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER]: { 
-        filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER, value: 1 
+      [OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER]: {
+        filterType: OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER, value: 1,
       },
-      [OTHER_QUERY_PARAM_KEYS.PAGE_SIZE]: { 
-        filterType: OTHER_QUERY_PARAM_KEYS.PAGE_SIZE, value: 20 
+      [OTHER_QUERY_PARAM_KEYS.PAGE_SIZE]: {
+        filterType: OTHER_QUERY_PARAM_KEYS.PAGE_SIZE, value: 20,
       },
     };
     if (profile.metro) {
-      defaultParams[FILTERABLE_FIELD_KEYS.METRO] = { 
-        filterType: FILTER_TYPES.IN, value: [profile.metro.id] 
+      defaultParams[FILTERABLE_FIELD_KEYS.METRO] = {
+        filterType: FILTER_TYPES.IN, value: [profile.metro.id],
       };
     }
     return defaultParams;

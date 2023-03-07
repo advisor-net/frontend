@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { useEffectOnce } from "../utils/hooks";
 
@@ -100,7 +100,6 @@ const getRenderableValueString = async (filterField, filterInfo) => {
 
 const ReadOnlyFilter = ({ filterKey, filterInfo, onRemove }) => {
   const [renderValue, setRenderValue] = useState(null);
-  const [isFetchingValue, setisFetchingValue] = useState(false);
 
   // on mount, fetch the field display values if we need to
   useEffectOnce(() => {

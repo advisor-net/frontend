@@ -39,7 +39,7 @@ const ProtectedLayout = () => {
             <Logo />
             <HStack as={'nav'} spacing={4} display={'flex'}>
               <NavLink
-                to={`/profile/${getUserUuid()}`}
+                to={`/p/${getUserUuid()}`}
                 style={({ isActive }) => (isActive ? activeStyle : undefined)}
               >
                 Profile

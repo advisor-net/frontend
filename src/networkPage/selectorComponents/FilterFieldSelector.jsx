@@ -1,4 +1,4 @@
-import { Select } from 'chakra-react-select';
+import Select from '../../components/Select'
 import { FILTERABLE_FIELD_LABELS } from '../constants';
 
 const OPTIONS = Object.entries(FILTERABLE_FIELD_LABELS).map(([value, label]) => {

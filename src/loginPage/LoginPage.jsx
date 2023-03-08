@@ -33,7 +33,7 @@ const LoginPage = () => {
   const location = useLocation();
 
   const originalFrom = location.state?.from?.pathname || '/';
-  const from = originalFrom === '/' ? '/profile' : originalFrom;
+  const from = originalFrom === '/' ? '/p' : originalFrom;
 
   // TODO: clean up this redirect...i want the pages and loaders to be to handle their own URL logic
   const signinWithCredentials = async (params) => {
@@ -54,7 +54,7 @@ const LoginPage = () => {
     // when they get to the protected page and click the back button, they
     // won't end up back on the login page, which is also really nice for the
     // user experience.
-    let useFrom = from === '/profile' ? `/profile/${userProfile.uuid}` : from;
+    let useFrom = from === '/p' ? `/p/${userProfile.uuid}` : from;
     navigate(useFrom, { replace: true });
   };
 

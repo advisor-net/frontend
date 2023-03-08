@@ -68,15 +68,21 @@ const abbreviationFormatter = (num, digits) => {
     { value: 1e15, symbol: 'P' },
     { value: 1e18, symbol: 'E' },
   ];
-  const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
   const item = lookup
     .slice()
     .reverse()
     .find((obj) => num >= obj.value);
+  const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
   return item ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol : '0';
 };
 
-export const formatLargePrice = (num, digits) => `$${abbreviationFormatter(num, digits)}`;
+export const formatLargePrice = (num, digits) => {
+  let pre = '';
+  if (num < 0) {
+    pre = '-';
+  }
+  return `$${pre}${abbreviationFormatter(Math.abs(num), digits)}`;
+};
 
 export const formatDateString = (inputDays) => {
   const years = Math.floor(inputDays / 365);
@@ -176,3 +182,15 @@ export const removeSpaces = (str) => str.replace(/\s/g, '');
 
 export const flipObject = (data) =>
   Object.fromEntries(Object.entries(data).map(([key, value]) => [value, key]));
+
+export const formatFloat = (number, decimalPoints, dropZeroes = false) => {
+  if (Number.isNaN(number) || !number) {
+    return '';
+  }
+
+  if (dropZeroes) {
+    return Number(parseFloat(number).toFixed(decimalPoints)).toString();
+  }
+
+  return parseFloat(number).toFixed(decimalPoints);
+};

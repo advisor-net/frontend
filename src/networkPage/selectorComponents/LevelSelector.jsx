@@ -1,5 +1,5 @@
-import { Select } from 'chakra-react-select';
-import { JOB_LEVEL_LABELS } from '../constants';
+import Select from '../../components/Select'
+import { JOB_LEVEL_LABELS } from '../../constants/all';
 
 const OPTIONS = Object.entries(JOB_LEVEL_LABELS).map(([value, label]) => {
   return { value, label };

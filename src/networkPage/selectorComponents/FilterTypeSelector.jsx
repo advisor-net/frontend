@@ -1,4 +1,4 @@
-import { Select } from 'chakra-react-select';
+import Select from '../../components/Select'
 import { FILTER_TYPE_LABELS } from '../constants';
 
 const FilterTypeSelector = ({ allowedTypes, onChange, size = 'sm', isDisabled = false, value }) => {

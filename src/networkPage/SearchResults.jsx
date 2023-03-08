@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useState } from 'react';
 import { useTable, useSortBy } from 'react-table';
-import { useAsyncValue } from 'react-router-dom';
+import { Link, useAsyncValue } from 'react-router-dom';
 import { useSearchContext } from './SearchContext';
 import { useQuery } from 'react-query';
 import networkService from '../services/networkService';
@@ -20,12 +20,13 @@ import {
   FIELD_KEYS,
   FIELD_TO_TABLE_ACCESSOR,
   OTHER_QUERY_PARAM_KEYS,
-  JOB_LEVEL_LABELS,
 } from './constants';
+
+import { JOB_LEVEL_LABELS } from '../constants/all';
 
 import { formatLargePrice } from '../utils/utils';
 
-import { Table, Thead, Tbody, Tr, Th, Td, Flex, Heading, Box } from '@chakra-ui/react';
+import { Table, Thead, Tbody, Tr, Th, Td, Flex, Heading, Box, LinkBox, LinkOverlay } from '@chakra-ui/react';
 import { ChevronUpIcon, ChevronDownIcon } from '@chakra-ui/icons';
 
 const CustomTable = ({ columns, data, setOrderBy, initialSortBy }) => {
@@ -55,8 +56,8 @@ const CustomTable = ({ columns, data, setOrderBy, initialSortBy }) => {
 
   return (
     <>
-      <Table {...getTableProps()} variant="striped" colorScheme="teal" size="sm">
-        <Thead position="sticky" top={0} background="grey">
+      <Table {...getTableProps()} size="sm">
+        <Thead position="sticky" top={0} background="grey" zIndex={1}>
           {headerGroups.map((headerGroup) => (
             <Tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
@@ -85,15 +86,37 @@ const CustomTable = ({ columns, data, setOrderBy, initialSortBy }) => {
             </Tr>
           ))}
         </Thead>
-        <Tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
+        <Tbody {...getTableBodyProps()} zIndex={-1}>
+          {rows.map((row) => {
             prepareRow(row);
             return (
-              <Tr {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>;
+              <LinkBox as={Tr}
+                {...row.getRowProps()} 
+                style={{
+                  display: "table-row",
+                  verticalAlign: "inherit",
+                  userSelect: "none",
+                }}
+                _hover={{ 
+                  background: "teal",
+                  color: "#fff",
+                  transition: "100ms ease all",
+                }}
+              >
+                {row.cells.map((cell, index) => {
+                  if (index === 0) {
+                    return (
+                      <Td {...cell.getCellProps()}>
+                        <LinkOverlay href={`/network/p/${row.original.uuid}`}>
+                          {cell.render('Cell')}
+                        </LinkOverlay>
+                      </Td>
+                    );
+                  } else {
+                    return <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>;
+                  }
                 })}
-              </Tr>
+            </LinkBox>
             );
           })}
         </Tbody>
@@ -240,7 +263,7 @@ const SearchResults = () => {
     <Flex direction="column" border="1px solid #ddd" borderRadius={4} padding={2} flexGrow={1}>
       <Heading size="md">{`Results (${results.count || 0})`}</Heading>
       {Boolean(initialTableSortBy) && (
-        <Box overflowY="auto" maxHeight="60vh" borderRadius={4} marginTop={2} marginBottom={2}>
+        <Box overflowY="auto" maxHeight="60vh" border="1px solid #ddd" borderRadius={4} marginTop={2} marginBottom={2}>
           <CustomTable
             columns={columns}
             data={results}

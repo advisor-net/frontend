@@ -1,5 +1,5 @@
-import { Select } from 'chakra-react-select';
-import { GENDER_LABELS } from '../constants';
+import Select from '../../components/Select'
+import { GENDER_LABELS } from '../../constants/all';
 
 const OPTIONS = Object.entries(GENDER_LABELS).map(([value, label]) => {
   return { value, label };

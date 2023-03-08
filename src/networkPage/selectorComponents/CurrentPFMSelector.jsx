@@ -1,5 +1,5 @@
-import { Select } from 'chakra-react-select';
-import { CURRENT_PFM_LABELS } from '../constants';
+import Select from '../../components/Select'
+import { CURRENT_PFM_LABELS } from '../../constants/all';
 
 const OPTIONS = Object.entries(CURRENT_PFM_LABELS).map(([value, label]) => {
   return { value, label };

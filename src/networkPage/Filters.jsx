@@ -3,15 +3,14 @@ import { useState } from 'react';
 import { useEffectOnce } from '../utils/hooks';
 
 import {
-  CURRENT_PFM_LABELS,
   FIELD_FILTER_OPTIONS,
   FILTERABLE_FIELD_KEYS,
   FILTERABLE_FIELD_LABELS,
   FILTER_TYPES,
   FILTER_TYPE_LABELS,
-  GENDER_LABELS,
-  JOB_LEVEL_LABELS,
 } from './constants';
+
+import { CURRENT_PFM_LABELS, GENDER_LABELS, JOB_LEVEL_LABELS } from '../constants/all';
 
 import { addFilterToParams, removeFilterFromParams, getEmptyParams } from './utils';
 
@@ -168,7 +167,8 @@ const ReadOnlyFilter = ({ filterKey, filterType, value, onRemove, onEdit }) => {
         <MenuButton as={Button} marginLeft={2} size="sm">
           <HamburgerIcon />
         </MenuButton>
-        <MenuList>
+        {/* NOTE: need the z-index because of the sticky table header*/}
+        <MenuList zIndex={2}>
           <MenuItem onClick={() => onEdit(filterKey, filterType, value)}>Edit</MenuItem>
           <MenuDivider />
           <MenuItem onClick={() => onRemove(filterKey, filterType)} color="red">

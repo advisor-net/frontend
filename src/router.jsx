@@ -7,7 +7,7 @@ import NetworkSearch from './networkPage/NetworkSearch';
 import AccountSettings from './accountSettings/AccountSettings';
 import ProtectedLayout from './ProtectedLayout';
 
-import { loadProfileData } from './profilePage/loader';
+import { loadPersonalProfileData, loadNetworkProfileData } from './profilePage/loaders';
 import { loadNetworkSearchData } from './networkPage/loader';
 
 const ErrorPage = () => (
@@ -31,8 +31,8 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        path: '/profile/:uuid',
-        loader: loadProfileData,
+        path: '/p/:uuid',
+        loader: loadPersonalProfileData,
         element: <ProfilePage />,
         errorElement: <ErrorPage />,
       },
@@ -40,6 +40,12 @@ const router = createBrowserRouter([
         path: '/network',
         loader: loadNetworkSearchData,
         element: <NetworkSearch />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: '/network/p/:uuid',
+        loader: loadNetworkProfileData,
+        element: <ProfilePage />,
         errorElement: <ErrorPage />,
       },
       {

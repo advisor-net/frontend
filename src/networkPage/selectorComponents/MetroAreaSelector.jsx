@@ -1,4 +1,4 @@
-import { AsyncSelect } from 'chakra-react-select';
+import AsyncSelect from '../../components/AsyncSelect';
 import networkService from '../../services/networkService';
 
 const MetroAreaSelector = ({ onChange, size = 'sm' }) => {

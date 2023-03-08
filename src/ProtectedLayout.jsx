@@ -16,6 +16,8 @@ import Logo from './Logo';
 
 import { removeJwtToken, removeRefreshToken, removeUserUuid } from './utils/session';
 
+const HEIGHT = 16;
+
 const ProtectedLayout = () => {
   const navigate = useNavigate();
 
@@ -33,8 +35,8 @@ const ProtectedLayout = () => {
 
   return (
     <Flex direction="column">
-      <Box background={'gray.100'} paddingX={4}>
-        <Flex height={16} alignItems={'center'} justifyContent={'space-between'}>
+      <Box background={'gray.100'} paddingX={4} position="fixed" top="0px" width="100%" zIndex={1}>
+        <Flex height={HEIGHT} alignItems={'center'} justifyContent={'space-between'}>
           <HStack spacing={8} alignItems={'center'}>
             <Logo />
             <HStack as={'nav'} spacing={4} display={'flex'}>
@@ -72,7 +74,9 @@ const ProtectedLayout = () => {
           </Flex>
         </Flex>
       </Box>
-      <Outlet />
+      <Flex marginTop={HEIGHT} direction="column">
+        <Outlet />
+      </Flex>
     </Flex>
   );
 };

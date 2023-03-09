@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 
 import {
   Button,
@@ -12,14 +12,18 @@ import {
 } from '@chakra-ui/react';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 import { Await, useAsyncValue, useLoaderData } from 'react-router-dom';
-import EditUserProfileModal from './EditUserProfileModal';
-import EditIncomeStatementModal from './EditIncomeStatementModal';
-import EditNetWorthModal from './EditNetWorthModal';
-import HandleModal from './HandleModal';
+import HandleModal, { APPLICABLE_FIELD_KEYS as HANDLE_KEYS } from './HandleModal';
+import EditUserProfileModal, {
+  APPLICABLE_FIELD_KEYS as PROFILE_KEYS,
+} from './EditUserProfileModal';
+import EditIncomeStatementModal, {
+  APPLICABLE_FIELD_KEYS as INCOME_STATEMENT_KEYS,
+} from './EditIncomeStatementModal';
+import EditNetWorthModal, { APPLICABLE_FIELD_KEYS as NET_WORTH_KEYS } from './EditNetWorthModal';
 
 import GridSectionSubHeading from './GridSectionSubHeading';
 
-import { formatFloat, formatLargePrice } from '../utils/utils';
+import { formatFloat, formatLargePrice, isNully } from '../utils/utils';
 
 import { FIELD_KEYS, FIELD_LABELS, FIELD_TOOLTIPS } from './constants';
 import {
@@ -210,11 +214,58 @@ const ProfilePageComponent = () => {
     closeModalCallback();
   };
 
-  useEffect(() => {
-    if (isOwnProfile && !user.handle) {
-      onOpenHandleModal();
+  const requiresOnboardingInitial = useMemo(() => {
+    for (const fieldKey of HANDLE_KEYS) {
+      if (isNully(user[fieldKey])) {
+        return true;
+      }
     }
-  }, [user, isOwnProfile, onOpenHandleModal]);
+    return false;
+  }, [user]);
+  const requiresOnboardingProfile = useMemo(() => {
+    for (const fieldKey of PROFILE_KEYS) {
+      if (isNully(user[fieldKey])) {
+        return true;
+      }
+    }
+    return false;
+  }, [user]);
+  const requiresOnboardingIncomeStatement = useMemo(() => {
+    for (const fieldKey of INCOME_STATEMENT_KEYS) {
+      if (isNully(user[fieldKey])) {
+        return true;
+      }
+    }
+    return false;
+  }, [user]);
+  const requiresOnboardingNetWorth = useMemo(() => {
+    for (const fieldKey of NET_WORTH_KEYS) {
+      if (isNully(user[fieldKey])) {
+        return true;
+      }
+    }
+    return false;
+  }, [user]);
+
+  useEffect(() => {
+    if (isOwnProfile) {
+      if (requiresOnboardingInitial) onOpenHandleModal();
+      else if (requiresOnboardingProfile) onOpenEditUserProfileModal();
+      else if (requiresOnboardingIncomeStatement) onOpenEditIncomeStatementModal();
+      else if (requiresOnboardingNetWorth) onOpenEditNetWorthModal();
+    }
+  }, [
+    user,
+    isOwnProfile,
+    requiresOnboardingInitial,
+    requiresOnboardingProfile,
+    requiresOnboardingIncomeStatement,
+    requiresOnboardingNetWorth,
+    onOpenHandleModal,
+    onOpenEditUserProfileModal,
+    onOpenEditIncomeStatementModal,
+    onOpenEditNetWorthModal,
+  ]);
 
   return (
     <>
@@ -434,29 +485,33 @@ const ProfilePageComponent = () => {
           </Grid>
         </Flex>
       </Flex>
+      <HandleModal
+        isOpen={isHandleModalOpen}
+        onClose={onCloseHandleModal}
+        onUpdate={handleUpdateHandle}
+        user={user}
+        requiresOnboarding={requiresOnboardingInitial}
+      />
       <EditUserProfileModal
         isOpen={isEditUserProfileModalOpen}
         onClose={onCloseEditUserProfileModal}
         onUpdate={handleUpdate}
         user={user}
+        requiresOnboarding={requiresOnboardingProfile}
       />
       <EditIncomeStatementModal
         isOpen={isEditIncomeStatementModalOpen}
         onClose={onCloseEditIncomeStatementModal}
         onUpdate={handleUpdate}
         user={user}
+        requiresOnboarding={requiresOnboardingIncomeStatement}
       />
       <EditNetWorthModal
         isOpen={isEditNetWorthModalOpen}
         onClose={onCloseEditNetWorthModal}
         onUpdate={handleUpdate}
         user={user}
-      />
-      <HandleModal
-        isOpen={isHandleModalOpen}
-        onClose={onCloseHandleModal}
-        onUpdate={handleUpdateHandle}
-        user={user}
+        requiresOnboarding={requiresOnboardingNetWorth}
       />
     </>
   );

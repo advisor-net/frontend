@@ -17,6 +17,7 @@ import {
 import { InfoOutlineIcon, SpinnerIcon } from '@chakra-ui/icons';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
+import { FIELD_KEYS } from './constants';
 
 import StringInputFormComponent from '../components/forms/StringInputFormComponent';
 
@@ -34,16 +35,22 @@ const FirstTimeCopy = () => (
       It will be helpful to have your banking, investment, and personal finance management
       applications open to help input this information.
     </Text>
+    <Text>The information you enter here will be visibile to other people in the network.</Text>
+    <Text fontWeight="medium">
+      We will never divulge contact information, such as your email, to other members of the
+      network.
+    </Text>
     <Text>
-      The information you enter here will be visibile to other people in the network. We will NEVER
-      divulge contact information, such as your email, to other members of the network. Most of the
-      information we ask for is strictly demographic and should NOT be self identifying.
+      Most of the information we ask for is strictly demographic and should not be self identifying.
     </Text>
     <Text fontWeight="medium">
       We are asking for this information to help you and others find peers, mentors, and mentees to
       learn from.
     </Text>
-    <Text>As you enter your information, leverage the info icons (<InfoOutlineIcon/>) for more information on the fields you are filling out.</Text>
+    <Text>
+      As you enter your information in the next few screens, leverage the info icons (
+      <InfoOutlineIcon />) for more information on the fields you are filling out.
+    </Text>
     <Text marginTop={4}>
       Let&apos;s start with your handle. This is what others will see you as in the network, so make
       it fun!
@@ -60,8 +67,10 @@ const ChangeHandleCopy = () => (
   </Flex>
 );
 
+export const APPLICABLE_FIELD_KEYS = [FIELD_KEYS.HANDLE];
+
 // TODO: debounce the validation to save query hits
-const HandleModal = ({ isOpen, onClose, onUpdate, user }) => {
+const HandleModal = ({ isOpen, onClose, onUpdate, user, requiresOnboarding }) => {
   const onSubmit = async (values) => {
     onUpdate(values, onClose);
   };
@@ -97,15 +106,13 @@ const HandleModal = ({ isOpen, onClose, onUpdate, user }) => {
     return errors;
   };
 
-  const isFirstTime = !user.handle;
-
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
       size="4xl"
-      closeOnEsc={!isFirstTime}
-      closeOnOverlayClick={!isFirstTime}
+      closeOnEsc={!requiresOnboarding}
+      closeOnOverlayClick={!requiresOnboarding}
     >
       <ModalOverlay />
       <Formik
@@ -121,11 +128,13 @@ const HandleModal = ({ isOpen, onClose, onUpdate, user }) => {
         {({ handleSubmit, isSubmitting, isValidating, isValid }) => (
           <Form onSubmit={handleSubmit}>
             <ModalContent>
-              <ModalHeader>{isFirstTime ? 'Welcome to Advisor!' : 'Change handle'}</ModalHeader>
-              {!isFirstTime && <ModalCloseButton />}
+              <ModalHeader>
+                {requiresOnboarding ? 'Welcome to Advisor!' : 'Change handle'}
+              </ModalHeader>
+              {!requiresOnboarding && <ModalCloseButton />}
               <ModalBody>
                 <Flex direction="column">
-                  {isFirstTime ? <FirstTimeCopy /> : <ChangeHandleCopy />}
+                  {requiresOnboarding ? <FirstTimeCopy /> : <ChangeHandleCopy />}
                   <Field id="handle" name="handle">
                     {({ field, form }) => (
                       <FormControl isInvalid={!!form.errors[field.name]} isRequired>
@@ -155,7 +164,7 @@ const HandleModal = ({ isOpen, onClose, onUpdate, user }) => {
                 </Flex>
               </ModalBody>
               <ModalFooter>
-                {!isFirstTime && (
+                {!requiresOnboarding && (
                   <Button colorScheme="teal" variant="outline" onClick={onClose}>
                     Cancel
                   </Button>

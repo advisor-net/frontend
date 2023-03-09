@@ -143,7 +143,7 @@ export const FIELD_TOOLTIPS = {
   [FIELD_KEYS.NET_WORTH]:
     'Your net worth is a snapshot of your financial situation at a given point in time. It is determined by the relationship between your assets and your liabilities. Assets are all the property you own. Liabilities are all of your debts. If your assets outweigh your liabilities, you have positive net worth. If your liabilities outweigh your assets, you have negative net worth.',
   incomeStatement:
-    'There are three key factors that drive your monthly income statement: income, savings, and expenses. Your monthly income statement is important because it allows you to understand how profitable you are. Profitable in this sense means positive savings and positive net income, where you are able to put the desired amount of money away to your desired accounts and you still have money left over at the end of the month.',
+    'There are three key factors that drive your monthly income statement: income, savings, and expenses. Your monthly income statement is important because it allows you to understand how profitable you are. Profitable in the sense means positive savings and positive net income, where you are able to put the desired amount of money away to your desired accounts and you still have money left over at the end of the month.',
   primaryIncome:
     'This is the fixed income associated with your primary profession or your full time job. This is your base salary.',
   variableIncome: 'Income associated with your job performance e.g. commission, bonus, etc.',

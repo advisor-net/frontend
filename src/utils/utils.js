@@ -207,3 +207,5 @@ export const hasWhiteSpace = (s) => {
 export const startsWithNumber = (s) => {
   return /^\d/.test(s);
 };
+
+export const isNully = (v) => v === null || v === undefined;

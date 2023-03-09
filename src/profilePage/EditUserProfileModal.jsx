@@ -10,6 +10,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Text,
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -41,13 +42,29 @@ const UserProfileSchema = Yup.object().shape({
   [FIELD_KEYS.LEVEL]: Yup.mixed().required('Required'),
 });
 
-const EditUserProfileModal = ({ isOpen, onClose, onUpdate, user }) => {
+export const APPLICABLE_FIELD_KEYS = [
+  FIELD_KEYS.AGE,
+  FIELD_KEYS.CURRENT_PFM,
+  FIELD_KEYS.GENDER,
+  FIELD_KEYS.INDUSTRY,
+  FIELD_KEYS.JOB_TITLE,
+  FIELD_KEYS.METRO,
+  FIELD_KEYS.LEVEL,
+];
+
+const EditUserProfileModal = ({ isOpen, onClose, onUpdate, user, requiresOnboarding }) => {
   const onSubmit = async (values) => {
     await onUpdate(values, onClose);
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="4xl">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="4xl"
+      closeOnEsc={!requiresOnboarding}
+      closeOnOverlayClick={!requiresOnboarding}
+    >
       <ModalOverlay />
       <Formik
         initialValues={{
@@ -70,7 +87,7 @@ const EditUserProfileModal = ({ isOpen, onClose, onUpdate, user }) => {
             : null,
         }}
         validationSchema={UserProfileSchema}
-        validateOnMount={false}
+        validateOnMount
         onSubmit={async (values) => {
           await onSubmit({
             ...values,
@@ -83,13 +100,20 @@ const EditUserProfileModal = ({ isOpen, onClose, onUpdate, user }) => {
           });
         }}
       >
-        {({ handleSubmit, isSubmitting }) => (
+        {({ handleSubmit, isSubmitting, isValid }) => (
           <Form onSubmit={handleSubmit}>
             <ModalContent>
-              <ModalHeader>Edit profile</ModalHeader>
-              <ModalCloseButton />
+              <ModalHeader>{requiresOnboarding ? 'Set up profile' : 'Edit profile'}</ModalHeader>
+              {!requiresOnboarding && <ModalCloseButton />}
               <ModalBody>
                 <Flex direction="column">
+                  {requiresOnboarding && (
+                    <Text marginBottom={4}>
+                      Here you will input demographic information. This information will make it
+                      much easier to find relevant peers, mentors, mentees, and people who can help
+                      with your financial questions.
+                    </Text>
+                  )}
                   <Grid gap={4} templateColumns="repeat(2, 1fr)">
                     <GridItem colSpan={1} rowSpan={1}>
                       <ControlledFormFieldValue
@@ -144,10 +168,18 @@ const EditUserProfileModal = ({ isOpen, onClose, onUpdate, user }) => {
                 </Flex>
               </ModalBody>
               <ModalFooter>
-                <Button colorScheme="teal" variant="outline" onClick={onClose} marginRight={2}>
-                  Cancel
-                </Button>
-                <Button colorScheme="teal" type="submit" isLoading={isSubmitting} formNoValidate>
+                {!requiresOnboarding && (
+                  <Button colorScheme="teal" variant="outline" onClick={onClose} marginRight={2}>
+                    Cancel
+                  </Button>
+                )}
+                <Button
+                  colorScheme="teal"
+                  type="submit"
+                  isLoading={isSubmitting}
+                  isDisabled={!isValid}
+                  formNoValidate
+                >
                   Save
                 </Button>
               </ModalFooter>

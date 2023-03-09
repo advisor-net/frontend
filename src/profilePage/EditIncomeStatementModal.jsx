@@ -10,6 +10,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Text,
 } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -47,6 +48,23 @@ const IncomeStatementSchema = Yup.object().shape({
   [FIELD_KEYS.SAV_MARKET]: priceSchema,
 });
 
+export const APPLICABLE_FIELD_KEYS = [
+  FIELD_KEYS.INC_PRIMARY_ANNUAL,
+  FIELD_KEYS.INC_PRIMARY_TAX_FED,
+  FIELD_KEYS.INC_PRIMARY_TAX_STATE,
+  FIELD_KEYS.INC_VARIABLE_MONTHLY,
+  FIELD_KEYS.INC_VARIABLE_TAX_FED,
+  FIELD_KEYS.INC_VARIABLE_TAX_STATE,
+  FIELD_KEYS.INC_SECONDARY_MONTHLY,
+  FIELD_KEYS.INC_SECONDARY_TAX_FED,
+  FIELD_KEYS.INC_SECONDARY_TAX_STATE,
+  FIELD_KEYS.EXP_HOUSING,
+  FIELD_KEYS.EXP_OTHER_FIXED,
+  FIELD_KEYS.EXP_OTHER_VARIABLE,
+  FIELD_KEYS.SAV_RETIREMENT,
+  FIELD_KEYS.SAV_MARKET,
+];
+
 const getInitialValues = ({ user, fieldKeys }) => {
   const out = {};
   for (const fieldKey of fieldKeys) {
@@ -56,47 +74,43 @@ const getInitialValues = ({ user, fieldKeys }) => {
   return out;
 };
 
-const EditIncomeStatementModal = ({ isOpen, onClose, onUpdate, user }) => {
+const EditIncomeStatementModal = ({ isOpen, onClose, onUpdate, user, requiresOnboarding }) => {
   const onSubmit = async (values) => {
     await onUpdate(values, onClose);
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="4xl">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="4xl"
+      closeOnEsc={!requiresOnboarding}
+      closeOnOverlayClick={!requiresOnboarding}
+    >
       <ModalOverlay />
       <Formik
         initialValues={getInitialValues({
           user,
-          fieldKeys: [
-            FIELD_KEYS.INC_PRIMARY_ANNUAL,
-            FIELD_KEYS.INC_PRIMARY_TAX_FED,
-            FIELD_KEYS.INC_PRIMARY_TAX_STATE,
-            FIELD_KEYS.INC_VARIABLE_MONTHLY,
-            FIELD_KEYS.INC_VARIABLE_TAX_FED,
-            FIELD_KEYS.INC_VARIABLE_TAX_STATE,
-            FIELD_KEYS.INC_SECONDARY_MONTHLY,
-            FIELD_KEYS.INC_SECONDARY_TAX_FED,
-            FIELD_KEYS.INC_SECONDARY_TAX_STATE,
-            FIELD_KEYS.EXP_HOUSING,
-            FIELD_KEYS.EXP_OTHER_FIXED,
-            FIELD_KEYS.EXP_OTHER_VARIABLE,
-            FIELD_KEYS.SAV_RETIREMENT,
-            FIELD_KEYS.SAV_MARKET,
-          ],
+          fieldKeys: APPLICABLE_FIELD_KEYS,
         })}
         validationSchema={IncomeStatementSchema}
-        validateOnMount={false}
+        validateOnMount
         onSubmit={async (values) => {
           await onSubmit(values);
         }}
       >
-        {({ handleSubmit, isSubmitting }) => (
+        {({ handleSubmit, isSubmitting, isValid }) => (
           <Form onSubmit={handleSubmit}>
             <ModalContent>
-              <ModalHeader>Edit income statement</ModalHeader>
-              <ModalCloseButton />
+              <ModalHeader>
+                {requiresOnboarding ? 'Set up income statement' : 'Edit income statement'}
+              </ModalHeader>
+              {!requiresOnboarding && <ModalCloseButton />}
               <ModalBody>
                 <Flex direction="column">
+                  {requiresOnboarding && (
+                    <Text marginBottom={4}>{FIELD_TOOLTIPS.incomeStatement}</Text>
+                  )}
                   <Grid gap={4}>
                     <GridItem>
                       <GridSectionSubHeading
@@ -240,10 +254,18 @@ const EditIncomeStatementModal = ({ isOpen, onClose, onUpdate, user }) => {
                 </Flex>
               </ModalBody>
               <ModalFooter>
-                <Button colorScheme="teal" variant="outline" onClick={onClose} marginRight={2}>
-                  Cancel
-                </Button>
-                <Button colorScheme="teal" type="submit" isLoading={isSubmitting} formNoValidate>
+                {!requiresOnboarding && (
+                  <Button colorScheme="teal" variant="outline" onClick={onClose} marginRight={2}>
+                    Cancel
+                  </Button>
+                )}
+                <Button
+                  colorScheme="teal"
+                  type="submit"
+                  isLoading={isSubmitting}
+                  isDisabled={!isValid}
+                  formNoValidate
+                >
                   Save
                 </Button>
               </ModalFooter>

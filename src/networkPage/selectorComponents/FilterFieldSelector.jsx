@@ -1,4 +1,4 @@
-import Select from '../../components/selectorComponents/Select'
+import Select from '../../components/selectorComponents/Select';
 import { FILTERABLE_FIELD_LABELS } from '../constants';
 
 const OPTIONS = Object.entries(FILTERABLE_FIELD_LABELS).map(([value, label]) => {

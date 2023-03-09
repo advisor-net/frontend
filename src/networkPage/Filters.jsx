@@ -57,15 +57,24 @@ const getInputForm = (filterField, filterType, onChange) => {
       );
     case FILTERABLE_FIELD_KEYS.GENDER:
       return (
-        <GenderSelector onChange={(options) => onChange(options.map((option) => option.value))} isMulti={true}/>
+        <GenderSelector
+          onChange={(options) => onChange(options.map((option) => option.value))}
+          isMulti={true}
+        />
       );
     case FILTERABLE_FIELD_KEYS.INDUSTRY:
       return (
-        <IndustrySelector onChange={(options) => onChange(options.map((option) => option.value))} isMulti={true}/>
+        <IndustrySelector
+          onChange={(options) => onChange(options.map((option) => option.value))}
+          isMulti={true}
+        />
       );
     case FILTERABLE_FIELD_KEYS.JOB_TITLE:
       return (
-        <JobTitleSelector onChange={(options) => onChange(options.map((option) => option.value))} isMulti={true}/>
+        <JobTitleSelector
+          onChange={(options) => onChange(options.map((option) => option.value))}
+          isMulti={true}
+        />
       );
     case FILTERABLE_FIELD_KEYS.METRO:
       return (

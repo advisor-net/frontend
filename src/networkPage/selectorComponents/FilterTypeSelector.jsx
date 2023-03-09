@@ -1,4 +1,4 @@
-import Select from '../../components/selectorComponents/Select'
+import Select from '../../components/selectorComponents/Select';
 import { FILTER_TYPE_LABELS } from '../constants';
 
 const FilterTypeSelector = ({ allowedTypes, onChange, size = 'sm', isDisabled = false, value }) => {

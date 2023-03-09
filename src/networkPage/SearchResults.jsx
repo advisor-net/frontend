@@ -16,17 +16,25 @@ import {
   updatePageQueryInParams,
   updatePageSizeInParams,
 } from './utils';
-import {
-  FIELD_KEYS,
-  FIELD_TO_TABLE_ACCESSOR,
-  OTHER_QUERY_PARAM_KEYS,
-} from './constants';
+import { FIELD_KEYS, FIELD_TO_TABLE_ACCESSOR, OTHER_QUERY_PARAM_KEYS } from './constants';
 
 import { JOB_LEVEL_LABELS } from '../constants/all';
 
 import { formatLargePrice } from '../utils/utils';
 
-import { Table, Thead, Tbody, Tr, Th, Td, Flex, Heading, Box, LinkBox, LinkOverlay } from '@chakra-ui/react';
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Flex,
+  Heading,
+  Box,
+  LinkBox,
+  LinkOverlay,
+} from '@chakra-ui/react';
 import { ChevronUpIcon, ChevronDownIcon } from '@chakra-ui/icons';
 
 const CustomTable = ({ columns, data, setOrderBy, initialSortBy }) => {
@@ -90,17 +98,18 @@ const CustomTable = ({ columns, data, setOrderBy, initialSortBy }) => {
           {rows.map((row) => {
             prepareRow(row);
             return (
-              <LinkBox as={Tr}
-                {...row.getRowProps()} 
+              <LinkBox
+                as={Tr}
+                {...row.getRowProps()}
                 style={{
-                  display: "table-row",
-                  verticalAlign: "inherit",
-                  userSelect: "none",
+                  display: 'table-row',
+                  verticalAlign: 'inherit',
+                  userSelect: 'none',
                 }}
-                _hover={{ 
-                  background: "teal",
-                  color: "#fff",
-                  transition: "100ms ease all",
+                _hover={{
+                  background: 'teal',
+                  color: '#fff',
+                  transition: '100ms ease all',
                 }}
               >
                 {row.cells.map((cell, index) => {
@@ -116,7 +125,7 @@ const CustomTable = ({ columns, data, setOrderBy, initialSortBy }) => {
                     return <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>;
                   }
                 })}
-            </LinkBox>
+              </LinkBox>
             );
           })}
         </Tbody>
@@ -263,7 +272,14 @@ const SearchResults = () => {
     <Flex direction="column" border="1px solid #ddd" borderRadius={4} padding={2} flexGrow={1}>
       <Heading size="md">{`Results (${results.count || 0})`}</Heading>
       {Boolean(initialTableSortBy) && (
-        <Box overflowY="auto" maxHeight="60vh" border="1px solid #ddd" borderRadius={4} marginTop={2} marginBottom={2}>
+        <Box
+          overflowY="auto"
+          maxHeight="60vh"
+          border="1px solid #ddd"
+          borderRadius={4}
+          marginTop={2}
+          marginBottom={2}
+        >
           <CustomTable
             columns={columns}
             data={results}

@@ -2,10 +2,10 @@ import { Select as ReactSelect } from 'chakra-react-select';
 
 const Select = (props) => {
   return (
-    <ReactSelect 
+    <ReactSelect
       {...props}
-      menuPortalTarget={document.body} 
-      styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+      menuPortalTarget={document.body}
+      styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
     />
   );
 };

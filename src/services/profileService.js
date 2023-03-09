@@ -6,10 +6,11 @@ const profileService = {
       url: `/user/profile/${uuid}/`,
     }),
 
-  updateProfile: async (uuid, payload) => request.patch({
-    url: `/user/profile/${uuid}/`,
-    params: payload,
-  })
+  updateProfile: async (uuid, payload) =>
+    request.patch({
+      url: `/user/profile/${uuid}/`,
+      params: payload,
+    }),
 };
 
 export default profileService;

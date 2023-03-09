@@ -18,14 +18,14 @@ import { useSearchContext } from './SearchContext';
 
 import { formatLargePrice } from '../utils/utils';
 
-import CurrentPFMSelector from './selectorComponents/CurrentPFMSelector';
+import CurrentPFMSelector from '../components/selectorComponents/CurrentPFMSelector';
 import FilterFieldSelector from './selectorComponents/FilterFieldSelector';
 import FilterTypeSelector from './selectorComponents/FilterTypeSelector';
-import GenderSelector from './selectorComponents/GenderSelector';
-import IndustrySelector from './selectorComponents/IndustrySelector';
-import JobTitleSelector from './selectorComponents/JobTitleSelector';
-import LevelSelector from './selectorComponents/LevelSelector';
-import MetroAreaSelector from './selectorComponents/MetroAreaSelector';
+import GenderSelector from '../components/selectorComponents/GenderSelector';
+import IndustrySelector from '../components/selectorComponents/IndustrySelector';
+import JobTitleSelector from '../components/selectorComponents/JobTitleSelector';
+import LevelSelector from '../components/selectorComponents/LevelSelector';
+import MetroAreaSelector from '../components/selectorComponents/MetroAreaSelector';
 
 import networkService from '../services/networkService';
 
@@ -52,24 +52,26 @@ const getInputForm = (filterField, filterType, onChange) => {
       return (
         <CurrentPFMSelector
           onChange={(options) => onChange(options.map((option) => option.value))}
+          isMulti={true}
         />
       );
     case FILTERABLE_FIELD_KEYS.GENDER:
       return (
-        <GenderSelector onChange={(options) => onChange(options.map((option) => option.value))} />
+        <GenderSelector onChange={(options) => onChange(options.map((option) => option.value))} isMulti={true}/>
       );
     case FILTERABLE_FIELD_KEYS.INDUSTRY:
       return (
-        <IndustrySelector onChange={(options) => onChange(options.map((option) => option.value))} />
+        <IndustrySelector onChange={(options) => onChange(options.map((option) => option.value))} isMulti={true}/>
       );
     case FILTERABLE_FIELD_KEYS.JOB_TITLE:
       return (
-        <JobTitleSelector onChange={(options) => onChange(options.map((option) => option.value))} />
+        <JobTitleSelector onChange={(options) => onChange(options.map((option) => option.value))} isMulti={true}/>
       );
     case FILTERABLE_FIELD_KEYS.METRO:
       return (
         <MetroAreaSelector
           onChange={(options) => onChange(options.map((option) => option.value))}
+          isMulti={true}
         />
       );
     case FILTERABLE_FIELD_KEYS.LEVEL: {

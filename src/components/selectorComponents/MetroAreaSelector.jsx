@@ -1,12 +1,14 @@
-import AsyncSelect from '../../components/AsyncSelect';
+import AsyncSelect from './AsyncSelect';
 import networkService from '../../services/networkService';
 
-const JobTitleSelector = ({ onChange, size = 'sm' }) => {
+const IGNORE = '||$$IGNORE$$||';
+
+const MetroAreaSelector = ({ onChange, size = 'sm', isMulti, value = IGNORE }) => {
   const promiseOptions = async (inputValue) => {
     const searchParams = new URLSearchParams();
     searchParams.set('search', inputValue);
     const query = searchParams.toString();
-    const response = networkService.jobTitleSearch(query);
+    const response = networkService.metroAreaSearch(query);
     return response.then((res) => {
       return res.results.map((result) => {
         return { value: result.id, label: result.name };
@@ -14,16 +16,26 @@ const JobTitleSelector = ({ onChange, size = 'sm' }) => {
     });
   };
 
-  return (
+  return value !== IGNORE ? (
     <AsyncSelect
       cacheOptions
       defaultOptions
       loadOptions={promiseOptions}
       onChange={onChange}
       size={size}
-      isMulti={true}
+      isMulti={isMulti}
+      value={value}
+    />
+  ) : (
+    <AsyncSelect
+      cacheOptions
+      defaultOptions
+      loadOptions={promiseOptions}
+      onChange={onChange}
+      size={size}
+      isMulti={isMulti}
     />
   );
 };
 
-export default JobTitleSelector;
+export default MetroAreaSelector;

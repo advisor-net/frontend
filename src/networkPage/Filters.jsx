@@ -1,34 +1,5 @@
 import { useState } from 'react';
 
-import { useEffectOnce } from '../utils/hooks';
-
-import {
-  FIELD_FILTER_OPTIONS,
-  FILTERABLE_FIELD_KEYS,
-  FILTERABLE_FIELD_LABELS,
-  FILTER_TYPES,
-  FILTER_TYPE_LABELS,
-} from './constants';
-
-import { CURRENT_PFM_LABELS, GENDER_LABELS, JOB_LEVEL_LABELS } from '../constants/all';
-
-import { addFilterToParams, removeFilterFromParams, getEmptyParams } from './utils';
-
-import { useSearchContext } from './SearchContext';
-
-import { formatLargePrice } from '../utils/utils';
-
-import CurrentPFMSelector from '../components/selectorComponents/CurrentPFMSelector';
-import FilterFieldSelector from './selectorComponents/FilterFieldSelector';
-import FilterTypeSelector from './selectorComponents/FilterTypeSelector';
-import GenderSelector from '../components/selectorComponents/GenderSelector';
-import IndustrySelector from '../components/selectorComponents/IndustrySelector';
-import JobTitleSelector from '../components/selectorComponents/JobTitleSelector';
-import LevelSelector from '../components/selectorComponents/LevelSelector';
-import MetroAreaSelector from '../components/selectorComponents/MetroAreaSelector';
-
-import networkService from '../services/networkService';
-
 import { HamburgerIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -45,6 +16,34 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useEffectOnce } from '../utils/hooks';
+
+import {
+  FIELD_FILTER_OPTIONS,
+  FILTERABLE_FIELD_KEYS,
+  FILTERABLE_FIELD_LABELS,
+  FILTER_TYPES,
+  FILTER_TYPE_LABELS,
+} from './constants';
+
+import { CURRENT_PFM_LABELS, GENDER_LABELS, JOB_LEVEL_LABELS } from '../constants/all';
+
+import { addFilterToParams, getEmptyParams, removeFilterFromParams } from './utils';
+
+import { useSearchContext } from './SearchContext';
+
+import { formatLargePrice } from '../utils/utils';
+
+import CurrentPFMSelector from '../components/selectorComponents/CurrentPFMSelector';
+import FilterFieldSelector from './selectorComponents/FilterFieldSelector';
+import FilterTypeSelector from './selectorComponents/FilterTypeSelector';
+import GenderSelector from '../components/selectorComponents/GenderSelector';
+import IndustrySelector from '../components/selectorComponents/IndustrySelector';
+import JobTitleSelector from '../components/selectorComponents/JobTitleSelector';
+import LevelSelector from '../components/selectorComponents/LevelSelector';
+import MetroAreaSelector from '../components/selectorComponents/MetroAreaSelector';
+
+import networkService from '../services/networkService';
 
 const getInputForm = (filterField, filterType, onChange) => {
   switch (filterField) {
@@ -52,35 +51,35 @@ const getInputForm = (filterField, filterType, onChange) => {
       return (
         <CurrentPFMSelector
           onChange={(options) => onChange(options.map((option) => option.value))}
-          isMulti={true}
+          isMulti
         />
       );
     case FILTERABLE_FIELD_KEYS.GENDER:
       return (
         <GenderSelector
           onChange={(options) => onChange(options.map((option) => option.value))}
-          isMulti={true}
+          isMulti
         />
       );
     case FILTERABLE_FIELD_KEYS.INDUSTRY:
       return (
         <IndustrySelector
           onChange={(options) => onChange(options.map((option) => option.value))}
-          isMulti={true}
+          isMulti
         />
       );
     case FILTERABLE_FIELD_KEYS.JOB_TITLE:
       return (
         <JobTitleSelector
           onChange={(options) => onChange(options.map((option) => option.value))}
-          isMulti={true}
+          isMulti
         />
       );
     case FILTERABLE_FIELD_KEYS.METRO:
       return (
         <MetroAreaSelector
           onChange={(options) => onChange(options.map((option) => option.value))}
-          isMulti={true}
+          isMulti
         />
       );
     case FILTERABLE_FIELD_KEYS.LEVEL: {
@@ -88,7 +87,7 @@ const getInputForm = (filterField, filterType, onChange) => {
         case FILTER_TYPES.IN:
           return (
             <LevelSelector
-              isMulti={true}
+              isMulti
               onChange={(options) => onChange(options.map((option) => option.value))}
             />
           );
@@ -109,11 +108,11 @@ const getRenderableValueString = async (filterField, filterType, value) => {
   switch (filterField) {
     case FILTERABLE_FIELD_KEYS.CURRENT_PFM: {
       const stringArr = value.toString().split(',');
-      return stringArr.map((value) => CURRENT_PFM_LABELS[value]).join(', ');
+      return stringArr.map((v) => CURRENT_PFM_LABELS[v]).join(', ');
     }
     case FILTERABLE_FIELD_KEYS.GENDER: {
       const stringArr = value.toString().split(',');
-      return stringArr.map((value) => GENDER_LABELS[value]).join(', ');
+      return stringArr.map((v) => GENDER_LABELS[v]).join(', ');
     }
     case FILTERABLE_FIELD_KEYS.INDUSTRY: {
       const searchParams = new URLSearchParams();
@@ -141,7 +140,7 @@ const getRenderableValueString = async (filterField, filterType, value) => {
       switch (filterType) {
         case FILTER_TYPES.IN: {
           const stringArr = value.toString().split(',');
-          return stringArr.map((idValue) => JOB_LEVEL_LABELS[parseInt(idValue)]).join(', ');
+          return stringArr.map((idValue) => JOB_LEVEL_LABELS[parseInt(idValue, 10)]).join(', ');
         }
         default:
           return JOB_LEVEL_LABELS[value];
@@ -161,7 +160,7 @@ const ReadOnlyFilter = ({ filterKey, filterType, value, onRemove, onEdit }) => {
   // NOTE: we are forcing the component to remount by being clever with the key value
   useEffectOnce(() => {
     const getRenderValue = async () => {
-      return await getRenderableValueString(filterKey, filterType, value);
+      return getRenderableValueString(filterKey, filterType, value);
     };
     getRenderValue().then((resp) => {
       setRenderValue(resp);
@@ -178,7 +177,7 @@ const ReadOnlyFilter = ({ filterKey, filterType, value, onRemove, onEdit }) => {
         <MenuButton as={Button} marginLeft={2} size="sm">
           <HamburgerIcon />
         </MenuButton>
-        {/* NOTE: need the z-index because of the sticky table header*/}
+        {/* NOTE: need the z-index because of the sticky table header */}
         <MenuList zIndex={2}>
           <MenuItem onClick={() => onEdit(filterKey, filterType, value)}>Edit</MenuItem>
           <MenuDivider />
@@ -275,9 +274,8 @@ const Filters = () => {
                 onEdit={handleEditFilter}
               />
             );
-          } else {
-            return null;
           }
+          return null;
         })}
         {!isOpen && (
           <Button colorScheme="teal" onClick={onOpen} size="sm">

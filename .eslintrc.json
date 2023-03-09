@@ -1,6 +1,7 @@
 {
   "parser": "@babel/eslint-parser",
   "extends": ["airbnb", "airbnb/hooks", "plugin:prettier/recommended", "prettier"],
+  "plugins": ["unused-imports"],
   "env": {
     "browser": true,
     "commonjs": true,
@@ -51,10 +52,21 @@
         "props": false
       }
     ],
-    "no-unused-vars": [
-      1,
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports": 2,
+    "unused-imports/no-unused-vars": [
+      "warn",
       {
-        "varsIgnorePattern": "^_"
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "sort-imports": [
+      "error",
+      {
+        "ignoreDeclarationSort": true
       }
     ]
   }

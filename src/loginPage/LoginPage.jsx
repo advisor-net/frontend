@@ -1,6 +1,4 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import authService from '../services/authService';
-import { setJwtToken, setMetroArea, setRefreshToken, setUserUuid } from '../utils/session';
 
 import {
   Box,
@@ -10,13 +8,15 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Heading,
   HStack,
+  Heading,
   Input,
   VStack,
 } from '@chakra-ui/react';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
+import { setJwtToken, setMetroArea, setRefreshToken, setUserUuid } from '../utils/session';
+import authService from '../services/authService';
 
 import Logo from '../Logo';
 
@@ -54,15 +54,15 @@ const LoginPage = () => {
     // when they get to the protected page and click the back button, they
     // won't end up back on the login page, which is also really nice for the
     // user experience.
-    let useFrom = from === '/p' ? `/p/${userProfile.uuid}` : from;
+    const useFrom = from === '/p' ? `/p/${userProfile.uuid}` : from;
     navigate(useFrom, { replace: true });
   };
 
   return (
     <>
-      <Box background={'gray.100'} paddingX={4}>
-        <Flex height={16} alignItems={'center'} justifyContent={'space-between'}>
-          <HStack spacing={8} alignItems={'center'}>
+      <Box background="gray.100" paddingX={4}>
+        <Flex height={16} alignItems="center" justifyContent="space-between">
+          <HStack spacing={8} alignItems="center">
             <Logo />
           </HStack>
         </Flex>

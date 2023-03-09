@@ -1,9 +1,9 @@
 import {
+  NumberDecrementStepper,
+  NumberIncrementStepper,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
 } from '@chakra-ui/react';
 
 const NumberInputFormComponent = (props) => (

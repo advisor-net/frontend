@@ -1,32 +1,25 @@
 import {
-  Box,
   Button,
-  Checkbox,
   Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Heading,
-  HStack,
-  Input,
-  VStack,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
   Grid,
   GridItem,
-  Text,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
 } from '@chakra-ui/react';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 
 import NumberInputFormComponent from '../components/forms/NumberInputFormComponent';
 
-import { FIELD_KEYS, FIELD_LABELS, FIELD_TOOLTIPS } from './constants';
+import { FIELD_KEYS, FIELD_LABELS } from './constants';
 import { CURRENT_PFM_LABELS, GENDER_LABELS, JOB_LEVEL_LABELS } from '../constants/all';
 import GenderSelector from '../components/selectorComponents/GenderSelector';
 import MetroAreaSelector from '../components/selectorComponents/MetroAreaSelector';
@@ -68,7 +61,7 @@ const ControlledFormFieldValue = ({ fieldKey, inputComponent, inputProps = {} })
 };
 
 const EditUserProfileModal = ({ isOpen, onClose, onUpdate, user }) => {
-  const handleSubmit = async (values) => {
+  const onSubmit = async (values) => {
     await onUpdate(values, onClose);
   };
 
@@ -98,7 +91,7 @@ const EditUserProfileModal = ({ isOpen, onClose, onUpdate, user }) => {
         validationSchema={UserProfileSchema}
         validateOnMount={false}
         onSubmit={async (values) => {
-          await handleSubmit({
+          await onSubmit({
             ...values,
             currentPfm: values.currentPfm.value,
             gender: values.gender.value,

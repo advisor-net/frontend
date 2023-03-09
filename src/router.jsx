@@ -7,7 +7,7 @@ import NetworkSearch from './networkPage/NetworkSearch';
 import AccountSettings from './accountSettings/AccountSettings';
 import ProtectedLayout from './ProtectedLayout';
 
-import { loadPersonalProfileData, loadNetworkProfileData } from './profilePage/loaders';
+import { loadNetworkProfileData, loadPersonalProfileData } from './profilePage/loaders';
 import { loadNetworkSearchData } from './networkPage/loader';
 
 const ErrorPage = () => (
@@ -15,7 +15,7 @@ const ErrorPage = () => (
 );
 
 const NoMatch = () => {
-  return <Text>There's nothing here: 404!</Text>;
+  return <Text>There is nothing here: 404!</Text>;
 };
 
 const router = createBrowserRouter([

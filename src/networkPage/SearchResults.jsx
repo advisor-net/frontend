@@ -1,41 +1,40 @@
-import { useMemo, useEffect, useState } from 'react';
-import { useTable, useSortBy } from 'react-table';
-import { Link, useAsyncValue } from 'react-router-dom';
-import { useSearchContext } from './SearchContext';
+import { useEffect, useMemo, useState } from 'react';
+import { useSortBy, useTable } from 'react-table';
+import { useAsyncValue } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import networkService from '../services/networkService';
 import Pagination from 'rc-pagination';
 import { Select } from 'chakra-react-select';
+import {
+  Box,
+  Flex,
+  Heading,
+  LinkBox,
+  LinkOverlay,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from '@chakra-ui/react';
+import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
+import { useSearchContext } from './SearchContext';
+import networkService from '../services/networkService';
 
 import {
   getDefaultParamsForProfile,
-  updateURLfromParamsObj,
-  transformParamsObjToUrl,
   transformParamsObjToSortByTableState,
+  transformParamsObjToUrl,
   transformUrlToParamsObj,
   updatePageQueryInParams,
   updatePageSizeInParams,
+  updateURLfromParamsObj,
 } from './utils';
 import { FIELD_KEYS, FIELD_TO_TABLE_ACCESSOR, OTHER_QUERY_PARAM_KEYS } from './constants';
 
 import { JOB_LEVEL_LABELS } from '../constants/all';
 
 import { formatLargePrice } from '../utils/utils';
-
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Flex,
-  Heading,
-  Box,
-  LinkBox,
-  LinkOverlay,
-} from '@chakra-ui/react';
-import { ChevronUpIcon, ChevronDownIcon } from '@chakra-ui/icons';
 
 const CustomTable = ({ columns, data, setOrderBy, initialSortBy }) => {
   const {
@@ -60,77 +59,71 @@ const CustomTable = ({ columns, data, setOrderBy, initialSortBy }) => {
 
   useEffect(() => {
     setOrderBy(sortBy);
-  }, [sortBy]);
+  }, [sortBy, setOrderBy]);
 
   return (
-    <>
-      <Table {...getTableProps()} size="sm">
-        <Thead position="sticky" top={0} background="grey" zIndex={1}>
-          {headerGroups.map((headerGroup) => (
-            <Tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <Th
-                  userSelect="none"
-                  {...column.getHeaderProps()}
-                  {...column.getSortByToggleProps()}
-                  title={column.canSort ? 'Toggle sort' : ''}
-                  color="#fff"
-                >
-                  <Flex alignItems="center">
-                    {column.render('Header')}
-                    {/* Add a sort direction indicator */}
-                    {column.isSorted ? (
-                      column.isSortedDesc ? (
-                        <ChevronDownIcon ml={1} w={4} h={4} />
-                      ) : (
-                        <ChevronUpIcon ml={1} w={4} h={4} />
-                      )
-                    ) : (
-                      ''
-                    )}
-                  </Flex>
-                </Th>
-              ))}
-            </Tr>
-          ))}
-        </Thead>
-        <Tbody {...getTableBodyProps()} zIndex={-1}>
-          {rows.map((row) => {
-            prepareRow(row);
-            return (
-              <LinkBox
-                as={Tr}
-                {...row.getRowProps()}
-                style={{
-                  display: 'table-row',
-                  verticalAlign: 'inherit',
-                  userSelect: 'none',
-                }}
-                _hover={{
-                  background: 'teal',
-                  color: '#fff',
-                  transition: '100ms ease all',
-                }}
+    <Table {...getTableProps()} size="sm">
+      <Thead position="sticky" top={0} background="grey" zIndex={1}>
+        {headerGroups.map((headerGroup) => (
+          <Tr {...headerGroup.getHeaderGroupProps()}>
+            {headerGroup.headers.map((column) => (
+              <Th
+                userSelect="none"
+                {...column.getHeaderProps()}
+                {...column.getSortByToggleProps()}
+                title={column.canSort ? 'Toggle sort' : ''}
+                color="#fff"
               >
-                {row.cells.map((cell, index) => {
-                  if (index === 0) {
-                    return (
-                      <Td {...cell.getCellProps()}>
-                        <LinkOverlay href={`/network/p/${row.original.uuid}`}>
-                          {cell.render('Cell')}
-                        </LinkOverlay>
-                      </Td>
-                    );
-                  } else {
-                    return <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>;
-                  }
-                })}
-              </LinkBox>
-            );
-          })}
-        </Tbody>
-      </Table>
-    </>
+                <Flex alignItems="center">
+                  {column.render('Header')}
+                  {/* Add a sort direction indicator. TODO: improve this display */}
+                  {column.isSorted &&
+                    (column.isSortedDesc ? (
+                      <ChevronDownIcon ml={1} w={4} h={4} />
+                    ) : (
+                      <ChevronUpIcon ml={1} w={4} h={4} />
+                    ))}
+                </Flex>
+              </Th>
+            ))}
+          </Tr>
+        ))}
+      </Thead>
+      <Tbody {...getTableBodyProps()} zIndex={-1}>
+        {rows.map((row) => {
+          prepareRow(row);
+          return (
+            <LinkBox
+              as={Tr}
+              {...row.getRowProps()}
+              style={{
+                display: 'table-row',
+                verticalAlign: 'inherit',
+                userSelect: 'none',
+              }}
+              _hover={{
+                background: 'teal',
+                color: '#fff',
+                transition: '100ms ease all',
+              }}
+            >
+              {row.cells.map((cell, index) => {
+                if (index === 0) {
+                  return (
+                    <Td {...cell.getCellProps()}>
+                      <LinkOverlay href={`/network/p/${row.original.uuid}`}>
+                        {cell.render('Cell')}
+                      </LinkOverlay>
+                    </Td>
+                  );
+                }
+                return <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>;
+              })}
+            </LinkBox>
+          );
+        })}
+      </Tbody>
+    </Table>
   );
 };
 
@@ -214,12 +207,12 @@ const SearchResults = () => {
 
     // TODO: page protection
     if (nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER]) {
-      setCurrentPage(parseInt(nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER].value));
+      setCurrentPage(parseInt(nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_NUMBER].value, 10));
     }
     if (nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_SIZE]) {
       const paramInfo = nextParamsObj[OTHER_QUERY_PARAM_KEYS.PAGE_SIZE];
       setCurrentPageSize({
-        value: parseInt(paramInfo.value),
+        value: parseInt(paramInfo.value, 10),
         label: paramInfo.value.toString(),
       });
     }
@@ -258,11 +251,13 @@ const SearchResults = () => {
     }
   );
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     if (searchString) {
       searchResult.refetch();
     }
   }, [searchString]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   // NOTE: we are not mounting until we run the initial effects to allow for the table state
   // to be initialized by information we extract from the URL

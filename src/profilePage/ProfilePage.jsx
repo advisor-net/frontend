@@ -1,28 +1,27 @@
 import { Suspense, useState } from 'react';
 
 import {
-  Text,
-  Heading,
-  Flex,
   Button,
+  Flex,
   Grid,
   GridItem,
+  Heading,
+  Text,
   Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
+import { Await, useAsyncValue, useLoaderData } from 'react-router-dom';
 import EditUserProfileModal from './EditUserProfileModal';
 
-import { useLoaderData, useAsyncValue, Await } from 'react-router-dom';
-
-import { formatLargePrice, formatFloat } from '../utils/utils';
+import { formatFloat, formatLargePrice } from '../utils/utils';
 
 import { FIELD_KEYS, FIELD_LABELS, FIELD_TOOLTIPS } from './constants';
 import {
   CURRENT_PFM_LABELS,
+  FIELD_PLACEHOLDER,
   GENDER_LABELS,
   JOB_LEVEL_LABELS,
-  FIELD_PLACEHOLDER,
 } from '../constants/all';
 import profileService from '../services/profileService';
 import { getUserUuid } from '../utils/session';
@@ -68,9 +67,8 @@ const getStyleSettingsForPosNeg = ({ user, fieldKey }) => {
       }
       if (parseFloat(value) >= 0) {
         return { background: 'green', color: '#fff' };
-      } else {
-        return { background: 'red', color: '#fff' };
       }
+      return { background: 'red', color: '#fff' };
     }
     default:
       return { background: 'unset', color: 'unset' };
@@ -80,7 +78,7 @@ const getStyleSettingsForPosNeg = ({ user, fieldKey }) => {
 // TODO: rendering tooltip when there is an ellipsis
 const FieldValue = ({ title, displayValue, tooltipInfo, maxWidth = '300px' }) => (
   <Flex direction="column" gap={1} maxWidth={maxWidth}>
-    {!!tooltipInfo ? (
+    {tooltipInfo ? (
       <Flex alignItems="center" gap={1}>
         <Text fontWeight="medium">{title}</Text>
         <Tooltip label={tooltipInfo} placement="top-end">
@@ -111,7 +109,7 @@ const SummaryFieldValue = ({ user, fieldKey }) => (
   <Grid alignItems="center" gap={4} templateColumns="repeat(4, 1fr)" marginBottom={2}>
     <GridItem />
     <GridItem textAlign="right" colSpan={2}>
-      {!!FIELD_TOOLTIPS[fieldKey] ? (
+      {FIELD_TOOLTIPS[fieldKey] ? (
         <Flex gap={1} justifyContent="flex-end" alignItems="center">
           <Text fontWeight="medium">{FIELD_LABELS[fieldKey] || fieldKey}</Text>
           <Tooltip label={FIELD_TOOLTIPS[fieldKey]} placement="top-end">
@@ -135,7 +133,7 @@ const SummaryFieldValue = ({ user, fieldKey }) => (
 
 const SectionHeading = ({ title, tooltipInfo, isOwnProfile, onEdit }) => (
   <Flex alignItems="center" marginBottom={2}>
-    {!!tooltipInfo ? (
+    {tooltipInfo ? (
       <Flex flexGrow={1} gap={1} alignItems="center">
         <Heading fontSize="lg">{title}</Heading>
         <Tooltip label={tooltipInfo} placement="top-end">
@@ -156,7 +154,7 @@ const SectionHeading = ({ title, tooltipInfo, isOwnProfile, onEdit }) => (
 );
 
 const SectionSubHeading = ({ title, tooltipInfo }) =>
-  !!tooltipInfo ? (
+  tooltipInfo ? (
     <Flex gap={1} marginBottom={2} alignItems="center">
       <Heading fontSize="md">{title}</Heading>
       <Tooltip label={tooltipInfo} placement="top-end">

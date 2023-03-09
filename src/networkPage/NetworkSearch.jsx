@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { useLoaderData, Await } from 'react-router-dom';
+import { Await, useLoaderData } from 'react-router-dom';
 
 import { Flex, Heading } from '@chakra-ui/react';
 import SearchResults from './SearchResults';

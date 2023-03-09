@@ -14,7 +14,7 @@ import {
   ModalOverlay,
   Text,
 } from '@chakra-ui/react';
-import { SpinnerIcon } from '@chakra-ui/icons';
+import { InfoOutlineIcon, SpinnerIcon } from '@chakra-ui/icons';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -43,7 +43,8 @@ const FirstTimeCopy = () => (
       We are asking for this information to help you and others find peers, mentors, and mentees to
       learn from.
     </Text>
-    <Text>
+    <Text>As you enter your information, leverage the info icons (<InfoOutlineIcon/>) for more information on the fields you are filling out.</Text>
+    <Text marginTop={4}>
       Let&apos;s start with your handle. This is what others will see you as in the network, so make
       it fun!
     </Text>
@@ -70,6 +71,7 @@ const HandleModal = ({ isOpen, onClose, onUpdate, user }) => {
     const handleSchema = Yup.string()
       .required('Required')
       .max(24, 'Must be shorter than 24 characters')
+      .min(4, 'Must be at least 4 characters')
       .test(
         'doesNotContainSpecialChars',
         'Cannot contain special characters other than an underscore',

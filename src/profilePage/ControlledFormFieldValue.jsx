@@ -1,9 +1,4 @@
-import {
-  FormControl,
-  FormErrorMessage,
-  FormHelperText,
-  FormLabel,
-} from '@chakra-ui/react';
+import { FormControl, FormErrorMessage, FormHelperText, FormLabel } from '@chakra-ui/react';
 import { Field } from 'formik';
 
 import { FIELD_LABELS, FIELD_TOOLTIPS } from './constants';
@@ -19,7 +14,9 @@ const ControlledFormFieldValue = ({ fieldKey, inputComponent, inputProps = {} })
             onChange: (val) => form.setFieldValue(fieldKey, val),
             ...inputProps,
           })}
-          {!!FIELD_TOOLTIPS[fieldKey] && <FormHelperText>{FIELD_TOOLTIPS[fieldKey]}</FormHelperText>}
+          {!!FIELD_TOOLTIPS[fieldKey] && (
+            <FormHelperText>{FIELD_TOOLTIPS[fieldKey]}</FormHelperText>
+          )}
           <FormErrorMessage>{form.errors[fieldKey]}</FormErrorMessage>
         </FormControl>
       )}

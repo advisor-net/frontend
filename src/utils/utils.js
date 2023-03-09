@@ -194,3 +194,16 @@ export const formatFloat = (number, decimalPoints, dropZeroes = false) => {
 
   return parseFloat(number).toFixed(decimalPoints);
 };
+
+export const containsSpecialChars = (s) => {
+  const specialChars = /[`!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?~]/;
+  return specialChars.test(s);
+};
+
+export const hasWhiteSpace = (s) => {
+  return /\s/g.test(s);
+};
+
+export const startsWithNumber = (s) => {
+  return /^\d/.test(s);
+};

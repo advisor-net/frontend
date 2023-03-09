@@ -22,7 +22,9 @@ import { FIELD_KEYS, FIELD_TOOLTIPS } from './constants';
 
 import ControlledFormFieldValue from './ControlledFormFieldValue';
 
-const priceSchema = Yup.number().required('Required').moreThan(-0.001, 'Must be greater than or equal to zero');
+const priceSchema = Yup.number()
+  .required('Required')
+  .moreThan(-0.001, 'Must be greater than or equal to zero');
 
 const NetWorthSchema = Yup.object().shape({
   [FIELD_KEYS.ASSETS_SAVINGS]: priceSchema,
@@ -77,16 +79,13 @@ const EditNetWorthModal = ({ isOpen, onClose, onUpdate, user }) => {
                 <Flex direction="column">
                   <Grid gap={4}>
                     <GridItem>
-                      <GridSectionSubHeading
-                        title="Assets"
-                        tooltipInfo={FIELD_TOOLTIPS.assets}
-                      />
+                      <GridSectionSubHeading title="Assets" tooltipInfo={FIELD_TOOLTIPS.assets} />
                       <Grid gap={4} templateColumns="repeat(3, 1fr)">
                         <GridItem colSpan={1} rowSpan={1}>
                           <ControlledFormFieldValue
                             fieldKey={FIELD_KEYS.ASSETS_SAVINGS}
                             inputComponent={NumberInputFormComponent}
-                            inputProps={{ size: 'sm' }}
+                            inputProps={{ size: 'sm', autoFocus: 'autofocus' }}
                           />
                         </GridItem>
                         <GridItem colSpan={1} rowSpan={1}>
@@ -138,7 +137,7 @@ const EditNetWorthModal = ({ isOpen, onClose, onUpdate, user }) => {
                 </Flex>
               </ModalBody>
               <ModalFooter>
-                <Button colorScheme="teal" variant="ghost" onClick={onClose} marginRight={2}>
+                <Button colorScheme="teal" variant="outline" onClick={onClose} marginRight={2}>
                   Cancel
                 </Button>
                 <Button colorScheme="teal" type="submit" isLoading={isSubmitting} formNoValidate>

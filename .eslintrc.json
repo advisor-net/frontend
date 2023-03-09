@@ -68,6 +68,8 @@
       {
         "ignoreDeclarationSort": true
       }
-    ]
+    ],
+    "no-useless-escape": "off",
+    "no-nested-ternary": "off"
   }
 }

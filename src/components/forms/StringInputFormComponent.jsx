@@ -1,8 +1,9 @@
+import { forwardRef } from 'react';
 import { Input } from '@chakra-ui/react';
 
-const StringInputFormComponent = (props) => {
+const StringInputFormComponent = forwardRef((props, ref) => {
   const { onChange } = props;
-  return <Input {...props} onChange={(e) => onChange(e.target.value)} />;
-};
+  return <Input ref={ref} {...props} onChange={(e) => onChange(e.target.value)} />;
+});
 
 export default StringInputFormComponent;

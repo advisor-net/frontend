@@ -1,4 +1,4 @@
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 import {
   Button,
@@ -15,6 +15,7 @@ import { Await, useAsyncValue, useLoaderData } from 'react-router-dom';
 import EditUserProfileModal from './EditUserProfileModal';
 import EditIncomeStatementModal from './EditIncomeStatementModal';
 import EditNetWorthModal from './EditNetWorthModal';
+import HandleModal from './HandleModal';
 
 import GridSectionSubHeading from './GridSectionSubHeading';
 
@@ -164,7 +165,7 @@ const ProfilePageComponent = () => {
 
   useEffect(() => {
     setUser(originalUser);
-  }, [originalUser, setUser])
+  }, [originalUser, setUser]);
 
   const commonFlexProps = {
     direction: 'column',
@@ -174,6 +175,11 @@ const ProfilePageComponent = () => {
     minWidth: '800px',
   };
 
+  const {
+    isOpen: isHandleModalOpen,
+    onOpen: onOpenHandleModal,
+    onClose: onCloseHandleModal,
+  } = useDisclosure();
   const {
     isOpen: isEditUserProfileModalOpen,
     onOpen: onOpenEditUserProfileModal,
@@ -190,27 +196,47 @@ const ProfilePageComponent = () => {
     onClose: onCloseEditNetWorthModal,
   } = useDisclosure();
 
-  const handleUpdate = async (values, callback) => {
+  const handleUpdate = async (values, closeModalCallback) => {
     const uuid = getUserUuid();
     const response = await profileService.updateProfile(uuid, values);
     setUser(response);
-    callback();
+    closeModalCallback();
   };
+
+  const handleUpdateHandle = async (values, closeModalCallback) => {
+    const uuid = getUserUuid();
+    const response = await profileService.updateHandle(uuid, values);
+    setUser(response);
+    closeModalCallback();
+  };
+
+  useEffect(() => {
+    if (isOwnProfile && !user.handle) {
+      onOpenHandleModal();
+    }
+  }, [user, isOwnProfile, onOpenHandleModal]);
 
   return (
     <>
       <Flex direction="column" alignItems="center" gap={4} padding={4}>
+        <Flex minWidth="800px" padding={4}>
+          <Heading fontStyle="italic" fontSize="xl" color="teal" flexGrow={1}>
+            {user.handle || FIELD_PLACEHOLDER}
+          </Heading>
+          {isOwnProfile && (
+            <Button size="sm" onClick={onOpenHandleModal}>
+              Change handle
+            </Button>
+          )}
+        </Flex>
         <Flex {...commonFlexProps}>
           <SectionHeading
-            title={isOwnProfile ? 'Your profile' : 'User profile'}
+            title="Profile"
             tooltipInfo={null}
             isOwnProfile={isOwnProfile}
             onEdit={onOpenEditUserProfileModal}
           />
           <Grid gap={4}>
-            <GridItem colSpan={3} rowSpan={1}>
-              <ControlledFieldValue fieldKey={FIELD_KEYS.HANDLE} user={user} maxWidth="unset" />
-            </GridItem>
             <GridItem colSpan={1} rowSpan={1}>
               <ControlledFieldValue fieldKey={FIELD_KEYS.AGE} user={user} />
             </GridItem>
@@ -424,6 +450,12 @@ const ProfilePageComponent = () => {
         isOpen={isEditNetWorthModalOpen}
         onClose={onCloseEditNetWorthModal}
         onUpdate={handleUpdate}
+        user={user}
+      />
+      <HandleModal
+        isOpen={isHandleModalOpen}
+        onClose={onCloseHandleModal}
+        onUpdate={handleUpdateHandle}
         user={user}
       />
     </>

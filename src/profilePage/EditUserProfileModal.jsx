@@ -86,7 +86,7 @@ const EditUserProfileModal = ({ isOpen, onClose, onUpdate, user }) => {
         {({ handleSubmit, isSubmitting }) => (
           <Form onSubmit={handleSubmit}>
             <ModalContent>
-              <ModalHeader>Edit your profile</ModalHeader>
+              <ModalHeader>Edit profile</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
                 <Flex direction="column">
@@ -95,7 +95,7 @@ const EditUserProfileModal = ({ isOpen, onClose, onUpdate, user }) => {
                       <ControlledFormFieldValue
                         fieldKey={FIELD_KEYS.AGE}
                         inputComponent={NumberInputFormComponent}
-                        inputProps={{ size: 'sm' }}
+                        inputProps={{ size: 'sm', autoFocus: 'autofocus' }}
                       />
                     </GridItem>
                     <GridItem colSpan={1} rowSpan={1}>
@@ -144,7 +144,7 @@ const EditUserProfileModal = ({ isOpen, onClose, onUpdate, user }) => {
                 </Flex>
               </ModalBody>
               <ModalFooter>
-                <Button colorScheme="teal" variant="ghost" onClick={onClose} marginRight={2}>
+                <Button colorScheme="teal" variant="outline" onClick={onClose} marginRight={2}>
                   Cancel
                 </Button>
                 <Button colorScheme="teal" type="submit" isLoading={isSubmitting} formNoValidate>

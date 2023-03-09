@@ -11,6 +11,18 @@ const profileService = {
       url: `/user/profile/${uuid}/`,
       params: payload,
     }),
+
+  checkHandle: async (uuid, payload) =>
+    request.post({
+      url: `/user/check_handle/${uuid}/`,
+      params: payload,
+    }),
+
+  updateHandle: async (uuid, payload) =>
+    request.patch({
+      url: `/user/update_handle/${uuid}/`,
+      params: payload,
+    }),
 };
 
 export default profileService;

@@ -1,8 +1,4 @@
-import {
-  Flex,
-  Heading,
-  Tooltip,
-} from '@chakra-ui/react';
+import { Flex, Heading, Tooltip } from '@chakra-ui/react';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 
 const GridSectionSubHeading = ({ title, tooltipInfo }) =>
@@ -19,5 +15,4 @@ const GridSectionSubHeading = ({ title, tooltipInfo }) =>
     </Heading>
   );
 
-  export default GridSectionSubHeading;
-  
+export default GridSectionSubHeading;

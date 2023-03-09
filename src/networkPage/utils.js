@@ -110,7 +110,6 @@ export const transformUrlToParamsObj = (url) => {
   return newParamsObj;
 };
 
-// TODO: list in and making this all work properly
 export const transformParamsObjToUrl = (paramsObj) => {
   const searchParams = new URLSearchParams();
   for (const param of paramsObj) {

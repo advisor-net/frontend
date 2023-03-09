@@ -184,7 +184,7 @@ export const flipObject = (data) =>
   Object.fromEntries(Object.entries(data).map(([key, value]) => [value, key]));
 
 export const formatFloat = (number, decimalPoints, dropZeroes = false) => {
-  if (Number.isNaN(number) || !number) {
+  if (Number.isNaN(parseFloat(number))) {
     return '';
   }
 

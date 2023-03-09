@@ -1,9 +1,6 @@
 import {
   Button,
   Flex,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
   Grid,
   GridItem,
   Modal,
@@ -13,14 +10,13 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text
 } from '@chakra-ui/react';
-import { Field, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 
 import NumberInputFormComponent from '../components/forms/NumberInputFormComponent';
 
-import { FIELD_KEYS, FIELD_LABELS } from './constants';
+import { FIELD_KEYS } from './constants';
 import { CURRENT_PFM_LABELS, GENDER_LABELS, JOB_LEVEL_LABELS } from '../constants/all';
 import GenderSelector from '../components/selectorComponents/GenderSelector';
 import MetroAreaSelector from '../components/selectorComponents/MetroAreaSelector';
@@ -28,6 +24,8 @@ import CurrentPFMSelector from '../components/selectorComponents/CurrentPFMSelec
 import JobTitleSelector from '../components/selectorComponents/JobTitleSelector';
 import IndustrySelector from '../components/selectorComponents/IndustrySelector';
 import LevelSelector from '../components/selectorComponents/LevelSelector';
+
+import ControlledFormFieldValue from './ControlledFormFieldValue';
 
 const UserProfileSchema = Yup.object().shape({
   [FIELD_KEYS.AGE]: Yup.number()
@@ -43,31 +41,13 @@ const UserProfileSchema = Yup.object().shape({
   [FIELD_KEYS.LEVEL]: Yup.mixed().required('Required'),
 });
 
-const ControlledFormFieldValue = ({ fieldKey, inputComponent, inputProps = {} }) => {
-  return (
-    <Field id={fieldKey} name={fieldKey}>
-      {({ field, form }) => (
-        <FormControl isInvalid={!!form.errors[fieldKey] && form.touched[fieldKey]} isRequired>
-          <FormLabel>{FIELD_LABELS[fieldKey]}</FormLabel>
-          {inputComponent({
-            ...field,
-            onChange: (val) => form.setFieldValue(fieldKey, val),
-            ...inputProps,
-          })}
-          <FormErrorMessage>{form.errors[fieldKey]}</FormErrorMessage>
-        </FormControl>
-      )}
-    </Field>
-  );
-};
-
 const EditUserProfileModal = ({ isOpen, onClose, onUpdate, user }) => {
   const onSubmit = async (values) => {
     await onUpdate(values, onClose);
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+    <Modal isOpen={isOpen} onClose={onClose} size="4xl">
       <ModalOverlay />
       <Formik
         initialValues={{

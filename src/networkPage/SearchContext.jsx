@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useMemo, useState, useEffect } from 'react';
 import { transformSortByTableStateToParamsObj, updateURLfromParamsObj } from './utils';
 
 const SearchContext = createContext(null);

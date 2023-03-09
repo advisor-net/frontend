@@ -1,4 +1,4 @@
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 
 import {
   Button,
@@ -13,6 +13,10 @@ import {
 import { InfoOutlineIcon } from '@chakra-ui/icons';
 import { Await, useAsyncValue, useLoaderData } from 'react-router-dom';
 import EditUserProfileModal from './EditUserProfileModal';
+import EditIncomeStatementModal from './EditIncomeStatementModal';
+import EditNetWorthModal from './EditNetWorthModal';
+
+import GridSectionSubHeading from './GridSectionSubHeading';
 
 import { formatFloat, formatLargePrice } from '../utils/utils';
 
@@ -153,24 +157,14 @@ const SectionHeading = ({ title, tooltipInfo, isOwnProfile, onEdit }) => (
   </Flex>
 );
 
-const SectionSubHeading = ({ title, tooltipInfo }) =>
-  tooltipInfo ? (
-    <Flex gap={1} marginBottom={2} alignItems="center">
-      <Heading fontSize="md">{title}</Heading>
-      <Tooltip label={tooltipInfo} placement="top-end">
-        <InfoOutlineIcon size="sm" />
-      </Tooltip>
-    </Flex>
-  ) : (
-    <Heading fontSize="md" marginBottom={2}>
-      {title}
-    </Heading>
-  );
-
 const ProfilePageComponent = () => {
   const { user: originalUser, isOwnProfile } = useAsyncValue();
 
   const [user, setUser] = useState(originalUser);
+
+  useEffect(() => {
+    setUser(originalUser);
+  }, [originalUser, setUser])
 
   const commonFlexProps = {
     direction: 'column',
@@ -184,6 +178,16 @@ const ProfilePageComponent = () => {
     isOpen: isEditUserProfileModalOpen,
     onOpen: onOpenEditUserProfileModal,
     onClose: onCloseEditUserProfileModal,
+  } = useDisclosure();
+  const {
+    isOpen: isEditIncomeStatementModalOpen,
+    onOpen: onOpenEditIncomeStatementModal,
+    onClose: onCloseEditIncomeStatementModal,
+  } = useDisclosure();
+  const {
+    isOpen: isEditNetWorthModalOpen,
+    onOpen: onOpenEditNetWorthModal,
+    onClose: onCloseEditNetWorthModal,
   } = useDisclosure();
 
   const handleUpdate = async (values, callback) => {
@@ -239,10 +243,11 @@ const ProfilePageComponent = () => {
             title="Income statement"
             tooltipInfo={FIELD_TOOLTIPS.incomeStatement}
             isOwnProfile={isOwnProfile}
+            onEdit={onOpenEditIncomeStatementModal}
           />
           <Grid gap={4}>
             <GridItem colSpan={3} rowSpan={1}>
-              <SectionSubHeading
+              <GridSectionSubHeading
                 title="Primary income"
                 tooltipInfo={FIELD_TOOLTIPS.primaryIncome}
               />
@@ -262,7 +267,7 @@ const ProfilePageComponent = () => {
               </Grid>
             </GridItem>
             <GridItem colSpan={3} rowSpan={1}>
-              <SectionSubHeading
+              <GridSectionSubHeading
                 title="Variable income"
                 tooltipInfo={FIELD_TOOLTIPS.variableIncome}
               />
@@ -285,7 +290,7 @@ const ProfilePageComponent = () => {
               </Grid>
             </GridItem>
             <GridItem colSpan={3} rowSpan={1}>
-              <SectionSubHeading
+              <GridSectionSubHeading
                 title="Secondary income"
                 tooltipInfo={FIELD_TOOLTIPS.secondaryIncome}
               />
@@ -313,7 +318,7 @@ const ProfilePageComponent = () => {
               <SummaryFieldValue fieldKey={FIELD_KEYS.INC_TOTAL_MONTHLY_NET} user={user} />
             </GridItem>
             <GridItem colSpan={3} rowSpan={1}>
-              <SectionSubHeading
+              <GridSectionSubHeading
                 title="Monthly expenses"
                 tooltipInfo={FIELD_TOOLTIPS.monthlyExpenses}
               />
@@ -333,7 +338,7 @@ const ProfilePageComponent = () => {
               </Grid>
             </GridItem>
             <GridItem colSpan={3} rowSpan={1}>
-              <SectionSubHeading
+              <GridSectionSubHeading
                 title="Monthly savings"
                 tooltipInfo={FIELD_TOOLTIPS.monthlySavings}
               />
@@ -360,10 +365,11 @@ const ProfilePageComponent = () => {
             title="Net worth"
             tooltipInfo={FIELD_TOOLTIPS[FIELD_KEYS.NET_WORTH]}
             isOwnProfile={isOwnProfile}
+            onEdit={onOpenEditNetWorthModal}
           />
           <Grid gap={4}>
             <GridItem colSpan={3} rowSpan={1}>
-              <SectionSubHeading title="Assets" tooltipInfo={FIELD_TOOLTIPS.assets} />
+              <GridSectionSubHeading title="Assets" tooltipInfo={FIELD_TOOLTIPS.assets} />
               <Grid gap={4} templateColumns="repeat(4, 1fr)">
                 <GridItem>
                   <ControlledFieldValue fieldKey={FIELD_KEYS.ASSETS_SAVINGS} user={user} />
@@ -380,7 +386,7 @@ const ProfilePageComponent = () => {
               </Grid>
             </GridItem>
             <GridItem colSpan={3} rowSpan={1}>
-              <SectionSubHeading title="Liabilities" tooltipInfo={FIELD_TOOLTIPS.liabilities} />
+              <GridSectionSubHeading title="Liabilities" tooltipInfo={FIELD_TOOLTIPS.liabilities} />
               <Grid gap={4} templateColumns="repeat(4, 1fr)">
                 <GridItem>
                   <ControlledFieldValue fieldKey={FIELD_KEYS.LIA_LOANS} user={user} />
@@ -405,6 +411,18 @@ const ProfilePageComponent = () => {
       <EditUserProfileModal
         isOpen={isEditUserProfileModalOpen}
         onClose={onCloseEditUserProfileModal}
+        onUpdate={handleUpdate}
+        user={user}
+      />
+      <EditIncomeStatementModal
+        isOpen={isEditIncomeStatementModalOpen}
+        onClose={onCloseEditIncomeStatementModal}
+        onUpdate={handleUpdate}
+        user={user}
+      />
+      <EditNetWorthModal
+        isOpen={isEditNetWorthModalOpen}
+        onClose={onCloseEditNetWorthModal}
         onUpdate={handleUpdate}
         user={user}
       />

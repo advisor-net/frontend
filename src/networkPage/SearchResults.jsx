@@ -57,9 +57,15 @@ const CustomTable = ({ columns, data, setOrderBy, initialSortBy }) => {
     useSortBy
   );
 
+  /* eslint-disable react-hooks/exhaustive-deps */
+  // NOTE: If we include setOrderBy, we get a loop that infinitely runs. 
+  // This is related to the fact that we return a new object for params
+  // (a new array) with each update, which triggers an endless cycle.
+  // We should come back and try to make this more elegant
   useEffect(() => {
     setOrderBy(sortBy);
-  }, [sortBy, setOrderBy]);
+  }, [sortBy]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   return (
     <Table {...getTableProps()} size="sm">

@@ -7,17 +7,17 @@ const ControlledFormFieldValue = ({ fieldKey, inputComponent, inputProps = {} })
   return (
     <Field id={fieldKey} name={fieldKey}>
       {({ field, form }) => (
-        <FormControl isInvalid={!!form.errors[fieldKey] && form.touched[fieldKey]} isRequired>
+        <FormControl isInvalid={!!form.errors[field.name] && form.touched[field.name]} isRequired>
           <FormLabel>{FIELD_LABELS[fieldKey]}</FormLabel>
           {inputComponent({
             ...field,
-            onChange: (val) => form.setFieldValue(fieldKey, val),
+            onChange: (val) => form.setFieldValue(field.name, val),
             ...inputProps,
           })}
-          {!!FIELD_TOOLTIPS[fieldKey] && (
-            <FormHelperText>{FIELD_TOOLTIPS[fieldKey]}</FormHelperText>
+          {!!FIELD_TOOLTIPS[field.name] && (
+            <FormHelperText>{FIELD_TOOLTIPS[field.name]}</FormHelperText>
           )}
-          <FormErrorMessage>{form.errors[fieldKey]}</FormErrorMessage>
+          <FormErrorMessage>{form.errors[field.name]}</FormErrorMessage>
         </FormControl>
       )}
     </Field>

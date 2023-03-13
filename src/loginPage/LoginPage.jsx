@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import { setJwtToken, setMetroArea, setRefreshToken, setUserUuid } from '../utils/session';
+import { setJwtToken, setRefreshToken, setSessionUser } from '../utils/session';
 import authService from '../services/authService';
 
 import Logo from '../Logo';
@@ -43,10 +43,7 @@ const LoginPage = () => {
 
     // now fetch user info
     const userProfile = await authService.getProfile();
-    setUserUuid(userProfile.uuid);
-    if (userProfile.metro) {
-      setMetroArea(userProfile.metro.name);
-    }
+    setSessionUser(userProfile);
 
     // Send them back to the page they tried to visit when they were
     // redirected to the login page. Use { replace: true } so we don't create

@@ -46,3 +46,5 @@ export const JOB_LEVEL_LABELS = {
 };
 
 export const FIELD_PLACEHOLDER = '---';
+
+export const HEADER_HEIGHT = '64px';

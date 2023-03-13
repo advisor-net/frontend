@@ -1,7 +1,7 @@
 import { defer, redirect } from 'react-router-dom';
 
 import profileService from '../services/profileService';
-import { getUserUuid } from '../utils/session';
+import { getSessionUser } from '../utils/session';
 
 // TODO: improve the data flow here (from login as well), where the page handles the URL nonsense
 // I want each page to be independent and pull the resources it needs
@@ -9,10 +9,10 @@ import { getUserUuid } from '../utils/session';
 // page...that is probably a good way to do things
 // may lead to a lot of redundant fetches...but we will optimize that later
 const loadProfile = async ({ params, isPersonal }) => {
-  const loggedInUuid = getUserUuid();
-  const isOwnProfile = loggedInUuid === params.uuid;
+  const loggedInUser = getSessionUser();
+  const isOwnProfile = loggedInUser.uuid === params.uuid;
 
-  if (!loggedInUuid) {
+  if (!loggedInUser.uuid) {
     // redirect to login
     return redirect('/login');
   }

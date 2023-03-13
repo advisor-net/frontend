@@ -13,10 +13,29 @@ export const setRefreshToken = (token) => {
 };
 export const removeRefreshToken = () => localStorage.removeItem('refresh');
 
-export const getUserUuid = () => localStorage.getItem('userUuid');
-export const setUserUuid = (uuid) => localStorage.setItem('userUuid', uuid);
-export const removeUserUuid = () => localStorage.removeItem('userUuid');
-
-export const getMetroArea = () => localStorage.getItem('metro');
-export const setMetroArea = (metro) => localStorage.setItem('metro', metro);
-export const removeMetroArea = () => localStorage.removeItem('metro');
+// TODO: spin up redux and store this in memory, and not in local storage
+export const getSessionUser = () => {
+  return {
+    uuid: localStorage.getItem('uuid'),
+    id: localStorage.getItem('userId'),
+    email: localStorage.getItem('email'),
+    chatUsername: localStorage.getItem('chatUsername'),
+    chatUserSecret: localStorage.getItem('chatUserSecret'),
+    chatAgreedToTerms: localStorage.getItem('chatAgreedToTerms'),
+  };
+};
+export const setSessionUser = (user) => {
+  localStorage.setItem('uuid', user.uuid);
+  localStorage.setItem('userId', user.id);
+  localStorage.setItem('email', user.email);
+  if (user.chatUser) {
+    localStorage.setItem('chatUsername', user.chatUser.username);
+    localStorage.setItem('chatUserSecret', user.chatUser.password);
+    localStorage.setItem('chatAgreedToTerms', user.chatUser.agreedToTerms);
+  }
+};
+export const removeSessionUser = () => {
+  localStorage.removeItem('uuid');
+  localStorage.removeItem('userId');
+  localStorage.removeItem('email');
+};

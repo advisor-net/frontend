@@ -11,10 +11,14 @@ import {
   MenuList,
 } from '@chakra-ui/react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { getUserUuid, removeJwtToken, removeRefreshToken, removeUserUuid } from './utils/session';
+import {
+  getSessionUser,
+  removeJwtToken,
+  removeRefreshToken,
+  removeSessionUser,
+} from './utils/session';
 import Logo from './Logo';
-
-const HEIGHT = 16;
+import { HEADER_HEIGHT } from './constants/all';
 
 const ProtectedLayout = () => {
   const navigate = useNavigate();
@@ -27,25 +31,28 @@ const ProtectedLayout = () => {
   const signout = async () => {
     removeJwtToken();
     removeRefreshToken();
-    removeUserUuid();
+    removeSessionUser();
     navigate('/login');
   };
 
   return (
     <Flex direction="column">
       <Box background="gray.100" paddingX={4} position="fixed" top="0px" width="100%" zIndex={1}>
-        <Flex height={HEIGHT} alignItems="center" justifyContent="space-between">
+        <Flex height={HEADER_HEIGHT} alignItems="center" justifyContent="space-between">
           <HStack spacing={8} alignItems="center">
             <Logo />
             <HStack as="nav" spacing={4} display="flex">
               <NavLink
-                to={`/p/${getUserUuid()}`}
+                to={`/p/${getSessionUser()?.uuid}`}
                 style={({ isActive }) => (isActive ? activeStyle : undefined)}
               >
                 Profile
               </NavLink>
               <NavLink to="/network" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
                 Network
+              </NavLink>
+              <NavLink to="/chat" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
+                Chat
               </NavLink>
             </HStack>
           </HStack>
@@ -63,7 +70,7 @@ const ProtectedLayout = () => {
           </Flex>
         </Flex>
       </Box>
-      <Flex marginTop={HEIGHT} direction="column">
+      <Flex marginTop={HEADER_HEIGHT} direction="column">
         <Outlet />
       </Flex>
     </Flex>

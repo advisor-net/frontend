@@ -33,7 +33,7 @@ import {
   JOB_LEVEL_LABELS,
 } from '../constants/all';
 import profileService from '../services/profileService';
-import { getUserUuid } from '../utils/session';
+import { getSessionUser } from '../utils/session';
 
 const getDisplayValueForKey = ({ user, fieldKey }) => {
   switch (fieldKey) {
@@ -201,14 +201,14 @@ const ProfilePageComponent = () => {
   } = useDisclosure();
 
   const handleUpdate = async (values, closeModalCallback) => {
-    const uuid = getUserUuid();
+    const { uuid } = getSessionUser();
     const response = await profileService.updateProfile(uuid, values);
     setUser(response);
     closeModalCallback();
   };
 
   const handleUpdateHandle = async (values, closeModalCallback) => {
-    const uuid = getUserUuid();
+    const { uuid } = getSessionUser();
     const response = await profileService.updateHandle(uuid, values);
     setUser(response);
     closeModalCallback();

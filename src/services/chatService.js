@@ -29,6 +29,12 @@ const chatService = {
       url: `/user/chat_user_terms/${uuid}/`,
       params: payload,
     }),
+
+  reportUser: async (payload) => 
+    request.post({
+      url: `/user/report_misconduct/`,
+      params: payload,
+    }),
 };
 
 export default chatService;

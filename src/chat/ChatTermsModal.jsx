@@ -47,7 +47,7 @@ const ChatTermsModal = ({ isOpen, onClose }) => {
     if (sessionUser.chatUserSecret) {
       response = await chatService.updateTerms(sessionUser.uuid, values);
     } else {
-      response = await chatService.creatChatUser(sessionUser.uuid, values);
+      response = await chatService.getOrCreateChatUser(sessionUser.uuid, values);
     }
     setSessionUser(response);
     onClose();
@@ -91,7 +91,7 @@ const ChatTermsModal = ({ isOpen, onClose }) => {
                           isChecked={field.value}
                           onChange={(e) => form.setFieldValue(field.name, e.target.checked)}
                         >
-                          I agree to the rules of conduce and understand the repercussions
+                          I agree to the rules of conduct and understand the repercussions
                         </Checkbox>
                       </FormControl>
                     )}

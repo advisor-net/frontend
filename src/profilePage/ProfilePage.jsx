@@ -11,7 +11,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
-import { Await, useAsyncValue, useLoaderData } from 'react-router-dom';
+import { Await, Link, useAsyncValue, useLoaderData } from 'react-router-dom';
 import HandleModal, { APPLICABLE_FIELD_KEYS as HANDLE_KEYS } from './HandleModal';
 import EditUserProfileModal, {
   APPLICABLE_FIELD_KEYS as PROFILE_KEYS,
@@ -274,9 +274,13 @@ const ProfilePageComponent = () => {
           <Heading fontStyle="italic" fontSize="xl" color="teal" flexGrow={1}>
             {user.handle || FIELD_PLACEHOLDER}
           </Heading>
-          {isOwnProfile && (
-            <Button size="sm" onClick={onOpenHandleModal}>
+          {isOwnProfile ? (
+            <Button colorScheme="teal" size="sm" onClick={onOpenHandleModal}>
               Change handle
+            </Button>
+          ) : (
+            <Button as={Link} colorScheme="teal" size="sm" to={`/chat?with=${user.handle}`}>
+              Message
             </Button>
           )}
         </Flex>

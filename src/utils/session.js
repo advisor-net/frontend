@@ -31,7 +31,7 @@ export const setSessionUser = (user) => {
   if (user.chatUser) {
     localStorage.setItem('chatUsername', user.chatUser.username);
     localStorage.setItem('chatUserSecret', user.chatUser.password);
-    localStorage.setItem('chatAgreedToTerms', user.chatUser.agreedToTerms);
+    localStorage.setItem('chatAgreedToTerms', user.chatUser.agreedToTerms ? true : '');
   }
 };
 export const removeSessionUser = () => {

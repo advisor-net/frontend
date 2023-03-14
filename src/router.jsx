@@ -6,7 +6,7 @@ import ProfilePage from './profilePage/ProfilePage';
 import NetworkSearch from './networkPage/NetworkSearch';
 import AccountSettings from './accountSettings/AccountSettings';
 import ProtectedLayout from './ProtectedLayout';
-import DirectChatPage from './chat/ChatApp';
+import ChatApp from './chat/ChatApp';
 
 import { loadNetworkProfileData, loadPersonalProfileData } from './profilePage/loaders';
 import { loadNetworkSearchData } from './networkPage/loader';
@@ -56,7 +56,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/chat',
-        element: <DirectChatPage />,
+        element: <ChatApp />,
         errorElement: <ErrorPage />,
       },
       {

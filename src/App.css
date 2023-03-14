@@ -1,0 +1,19 @@
+.ce-my-message-bubble {
+  background-color: var(--chakra-colors-teal-500) !important;
+}
+
+.ce-chat-title-text {
+  color: var(--chakra-colors-teal-500) !important;
+}
+
+.ce-chat-subtitle-text {
+  color: var(--chakra-colors-teal-500) !important;
+}
+
+#ce-send-message-button {
+  background-color: var(--chakra-colors-teal-500) !important;
+}
+
+#ce-send-message-button:hover {
+  background-color: var(--chakra-colors-teal-600) !important;
+}

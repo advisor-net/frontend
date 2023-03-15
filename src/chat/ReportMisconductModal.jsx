@@ -1,9 +1,9 @@
 import {
   Button,
   Flex,
-  FormLabel,
   FormControl,
   FormErrorMessage,
+  FormLabel,
   Modal,
   ModalBody,
   ModalContent,
@@ -20,18 +20,16 @@ import chatService from '../services/chatService';
 
 const ReportedMisconductSchema = Yup.object().shape({
   handle: Yup.string().required('Required'),
-  description: Yup.string().required('Required').min(10, 'Must be at least 10 characters.')
+  description: Yup.string().required('Required').min(10, 'Must be at least 10 characters.'),
 });
 
 const ReportingDescriptionCopy = () => (
   <Flex direction="column" gap={2} marginBottom={4}>
-    <Text>
-      Reporting this person could result in them getting suspended or permanently banned.
+    <Text>Reporting this person could result in them getting suspended or permanently banned.</Text>
+    <Text fontWeight="medium">
+      Please provide a description for why you are reporting this person.
     </Text>
-    <Text fontWeight="medium">Please provide a description for why you are reporting this person.</Text>
-    <Text>
-      Admins will review the incident shortly after you provide details on the incident.
-    </Text>
+    <Text>Admins will review the incident shortly after you provide details on the incident.</Text>
   </Flex>
 );
 
@@ -70,15 +68,12 @@ const ReportMisconductModal = ({ isOpen, onClose, reportedUserHandle }) => {
                   <ReportingDescriptionCopy />
                   <Field id="description" name="description">
                     {({ field, form }) => (
-                      <FormControl
-                        isInvalid={!!form.errors[field.name]}
-                        isRequired
-                      >
+                      <FormControl isInvalid={!!form.errors[field.name]} isRequired>
                         <FormLabel>Description</FormLabel>
-                        <Textarea 
-                          value={field.value} 
-                          onChange={(e) => form.setFieldValue(field.name, e.target.value)} 
-                          placeholder='Description...' 
+                        <Textarea
+                          value={field.value}
+                          onChange={(e) => form.setFieldValue(field.name, e.target.value)}
+                          placeholder="Description..."
                           autoFocus="autofocus"
                         />
                         <FormErrorMessage>{form.errors[field.name]}</FormErrorMessage>
@@ -88,12 +83,7 @@ const ReportMisconductModal = ({ isOpen, onClose, reportedUserHandle }) => {
                 </Flex>
               </ModalBody>
               <ModalFooter>
-                <Button
-                  colorScheme="teal"
-                  variant="outline"
-                  onClick={onClose}
-                  marginRight={2}
-                >
+                <Button colorScheme="teal" variant="outline" onClick={onClose} marginRight={2}>
                   Cancel
                 </Button>
                 <Button

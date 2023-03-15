@@ -83,9 +83,7 @@ const ChatSettingsTop = ({ userName, admin, people }) => {
           ) : null}
         </CardBody>
         <CardFooter gap={2}>
-          <Button
-            as={Link} colorScheme="teal" size="sm" to={`/network/p/${otherChatPersonUuid}`}
-          >
+          <Button as={Link} colorScheme="teal" size="sm" to={`/network/p/${otherChatPersonUuid}`}>
             View profile
           </Button>
           <Button colorScheme="teal" size="sm" variant="outline" onClick={onOpen}>
@@ -93,7 +91,11 @@ const ChatSettingsTop = ({ userName, admin, people }) => {
           </Button>
         </CardFooter>
       </Card>
-      <ReportMisconductModal isOpen={isOpen} onClose={onClose} reportedUserHandle={otherChatPerson?.username}/>
+      <ReportMisconductModal
+        isOpen={isOpen}
+        onClose={onClose}
+        reportedUserHandle={otherChatPerson?.username}
+      />
     </>
   ) : null;
 };

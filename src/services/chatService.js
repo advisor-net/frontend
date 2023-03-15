@@ -30,7 +30,7 @@ const chatService = {
       params: payload,
     }),
 
-  reportUser: async (payload) => 
+  reportUser: async (payload) =>
     request.post({
       url: `/user/report_misconduct/`,
       params: payload,

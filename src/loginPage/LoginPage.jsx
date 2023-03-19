@@ -1,49 +1,47 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import {
   Box,
   Button,
-  Checkbox,
   Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
   HStack,
   Heading,
-  Input,
   VStack,
 } from '@chakra-ui/react';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import { setJwtToken, setRefreshToken, setSessionUser } from '../utils/session';
+import { setProfile } from '../session/sessionSlice';
+import { setToken } from '../session/token';
 import authService from '../services/authService';
+import StringInputFormComponent from '../components/forms/StringInputFormComponent';
 
-import Logo from '../Logo';
+import Logo from '../layout/Logo';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Required'),
   password: Yup.string().required('Required'),
-  rememberMe: Yup.boolean(),
 });
 
-// ToDo: fix theming
 // ToDo: add unable to login with credential async error handling
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const originalFrom = location.state?.from?.pathname || '/';
   const from = originalFrom === '/' ? '/p' : originalFrom;
 
-  // TODO: clean up this redirect...i want the pages and loaders to be to handle their own URL logic
   const signinWithCredentials = async (params) => {
-    const tokenInfo = await authService.obtainTokenPair(params);
-    setJwtToken(tokenInfo.access);
-    setRefreshToken(tokenInfo.refresh);
+    const tokenInfo = await authService.login(params);
+    setToken(tokenInfo.token);
 
     // now fetch user info
     const userProfile = await authService.getProfile();
-    setSessionUser(userProfile);
+    dispatch(setProfile(userProfile));
 
     // Send them back to the page they tried to visit when they were
     // redirected to the login page. Use { replace: true } so we don't create
@@ -71,7 +69,6 @@ const LoginPage = () => {
             initialValues={{
               email: '',
               password: '',
-              rememberMe: false,
             }}
             validationSchema={LoginSchema}
             validateOnMount={false}
@@ -82,27 +79,43 @@ const LoginPage = () => {
               });
             }}
           >
-            {({ handleSubmit, errors, touched, isSubmitting }) => (
+            {({ handleSubmit, isSubmitting }) => (
               <Form onSubmit={handleSubmit}>
                 <VStack spacing={4} align="flex-start">
-                  <FormControl isInvalid={!!errors.email && touched.email}>
-                    <FormLabel htmlFor="email">Email address</FormLabel>
-                    <Field as={Input} id="email" name="email" type="email" variant="filled" />
-                    <FormErrorMessage>{errors.email}</FormErrorMessage>
-                  </FormControl>
-                  <FormControl isInvalid={!!errors.password && touched.password}>
-                    <FormLabel htmlFor="password">Password</FormLabel>
-                    <Field
-                      as={Input}
-                      id="password"
-                      name="password"
-                      type="password"
-                      variant="filled"
-                    />
-                    <FormErrorMessage>{errors.password}</FormErrorMessage>
-                  </FormControl>
-                  <Field as={Checkbox} id="rememberMe" name="rememberMe" colorScheme="teal">
-                    Remember me?
+                  <Field id="email" name="email" type="email">
+                    {({ field, form }) => (
+                      <FormControl
+                        isInvalid={!!form.errors[field.name] && form.touched[field.name]}
+                        isRequired
+                      >
+                        <FormLabel htmlFor="email">Email address</FormLabel>
+                        <StringInputFormComponent
+                          {...field}
+                          onChange={(val) => form.setFieldValue(field.name, val)}
+                          autoFocus="autofocus"
+                          type="email"
+                          variant="filled"
+                        />
+                        <FormErrorMessage>{form.errors[field.name]}</FormErrorMessage>
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field id="password" name="password" type="password">
+                    {({ field, form }) => (
+                      <FormControl
+                        isInvalid={!!form.errors[field.name] && form.touched[field.name]}
+                        isRequired
+                      >
+                        <FormLabel htmlFor="password">Password</FormLabel>
+                        <StringInputFormComponent
+                          {...field}
+                          onChange={(val) => form.setFieldValue(field.name, val)}
+                          type="password"
+                          variant="filled"
+                        />
+                        <FormErrorMessage>{form.errors[field.name]}</FormErrorMessage>
+                      </FormControl>
+                    )}
                   </Field>
                   <Button type="submit" colorScheme="teal" width="full" isLoading={isSubmitting}>
                     Login

@@ -1,3 +1,6 @@
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+
 import {
   Button,
   Checkbox,
@@ -13,9 +16,8 @@ import {
 } from '@chakra-ui/react';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import { useNavigate } from 'react-router-dom';
+import { getProfile, setProfile } from '../session/sessionSlice';
 
-import { getSessionUser, setSessionUser } from '../utils/session';
 import chatService from '../services/chatService';
 
 const ChatTermsSchema = Yup.object().shape({
@@ -40,16 +42,17 @@ const RulesOfConductCopy = () => (
 );
 
 const ChatTermsModal = ({ isOpen, onClose }) => {
-  const sessionUser = getSessionUser();
+  const dispatch = useDispatch();
+  const profile = useSelector(getProfile);
 
   const onSubmit = async (values) => {
     let response;
-    if (sessionUser.chatUserSecret) {
-      response = await chatService.updateTerms(sessionUser.uuid, values);
+    if (profile.chatUser) {
+      response = await chatService.updateTerms(profile.uuid, values);
     } else {
-      response = await chatService.getOrCreateChatUser(sessionUser.uuid, values);
+      response = await chatService.getOrCreateChatUser(profile.uuid, values);
     }
-    setSessionUser(response);
+    dispatch(setProfile(response));
     onClose();
   };
 

@@ -11,27 +11,23 @@ import {
   MenuList,
 } from '@chakra-ui/react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import {
-  getSessionUser,
-  removeJwtToken,
-  removeRefreshToken,
-  removeSessionUser,
-} from './utils/session';
+import { useSelector } from 'react-redux';
+import { removeToken } from '../session/token';
 import Logo from './Logo';
-import { HEADER_HEIGHT } from './constants/all';
+import { HEADER_HEIGHT } from '../constants/all';
+import { getProfileUuid } from '../session/sessionSlice';
 
 const ProtectedLayout = () => {
+  const profileUuid = useSelector(getProfileUuid);
+
   const navigate = useNavigate();
 
   const activeStyle = {
     textDecoration: 'underline',
   };
 
-  // TODO: actually log the user out from an API perspective
   const signout = async () => {
-    removeJwtToken();
-    removeRefreshToken();
-    removeSessionUser();
+    removeToken();
     navigate('/login');
   };
 
@@ -43,7 +39,7 @@ const ProtectedLayout = () => {
             <Logo />
             <HStack as="nav" spacing={4} display="flex">
               <NavLink
-                to={`/p/${getSessionUser()?.uuid}`}
+                to={profileUuid ? `/p/${profileUuid}` : '/p'}
                 style={({ isActive }) => (isActive ? activeStyle : undefined)}
               >
                 Profile

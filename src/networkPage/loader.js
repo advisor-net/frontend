@@ -1,10 +1,10 @@
 import { defer } from 'react-router-dom';
-import authService from '../services/authService';
+import lazyLoadProfile from '../session/lazyLoadProfile';
 
-const loadNetworkSearch = async () => {
+const loadNetworkSearch = async ({ state, dispatch }) => {
   try {
-    const response = await authService.getProfile();
-    return { profile: response };
+    const profile = await lazyLoadProfile(state, dispatch);
+    return { profile };
   } catch (error) {
     console.error(error);
     return {};
@@ -13,7 +13,7 @@ const loadNetworkSearch = async () => {
 
 // NOTE: not awaiting here to take advantage of defer behavior
 // https://reactrouter.com/en/main/guides/deferred
-export const loadNetworkSearchData = async ({ params, request }) =>
+export const loadNetworkSearchData = async ({ params, state, dispatch }) =>
   defer({
-    data: loadNetworkSearch({ params, request }),
+    data: loadNetworkSearch({ params, state, dispatch }),
   });

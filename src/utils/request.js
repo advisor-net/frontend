@@ -1,5 +1,5 @@
 import { keysToCamelCaseDeep, keysToSnakeCaseDeep } from './utils';
-import { getJwtToken, getRefreshToken, setJwtToken } from './session';
+import { getToken } from '../session/token';
 
 const isObject = (a) => typeof a === 'object' && a !== null;
 
@@ -19,10 +19,9 @@ const prepareFetch = ({ url, token, params, method, additionalRequestParams, sig
   let headers = {
     Accept: 'application/json',
   };
-
   if (token !== null && !additionalRequestParams.ignoreAuthorizationHeader) {
     // likely use this for s3 downloads
-    headers.Authorization = `Bearer ${token}`;
+    headers.Authorization = `Token ${token}`;
   }
 
   if ('headers' in additionalRequestParams) {
@@ -92,7 +91,7 @@ FetchError.prototype = Object.create(Error.prototype);
 FetchError.prototype.constructor = FetchError;
 
 const performRequest = async ({ url, params, method, additionalRequestParams, signal }) => {
-  const token = getJwtToken();
+  const token = getToken();
   const { fetchUrl, fetchOptions } = prepareFetch({
     url,
     token,
@@ -135,36 +134,9 @@ const requestFunc = async ({ url, params, method, additionalRequestParams, signa
   } catch (error) {
     // check for authentication woes
     if (error.statusCode === 401) {
-      // try to grab a new access token using the refresh token
-      // if this works, then retry the endpoint. If not, then push them to login
-      // screen.
-      const refreshToken = getRefreshToken();
-      try {
-        const refreshTokenResponse = await performRequest({
-          url: '/token/refresh/',
-          params: { refresh: refreshToken || 'bad_token' },
-          method: 'POST',
-          additionalRequestParams: {},
-        });
-        setJwtToken(refreshTokenResponse.access);
-      } catch (refreshTokenError) {
-        if (refreshTokenError.statusCode === 401) {
-          window.location.replace(`${window.location.origin}/login`);
-          return null;
-        }
-        throw refreshTokenError;
-      }
-
-      // now retry the request that got us here
-      // let this throw if it fails since we have handled authentication
-      const refreshedResponse = await performRequest({
-        url,
-        params,
-        method,
-        additionalRequestParams,
-        signal,
-      });
-      return refreshedResponse;
+      // push them to login screen to reauthenticate
+      window.location.replace(`${window.location.origin}/login`);
+      return null;
     }
     throw error;
   }

@@ -1,5 +1,5 @@
 import { HStack, Text } from '@chakra-ui/react';
-import MoneyTalkIcon from './icons/MoneyTalkIcon';
+import MoneyTalkIcon from '../icons/MoneyTalkIcon';
 
 const Logo = () => (
   <HStack>

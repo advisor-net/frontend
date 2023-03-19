@@ -1,28 +1,27 @@
-import { defer, redirect } from 'react-router-dom';
+import { defer } from 'react-router-dom';
 
 import profileService from '../services/profileService';
-import { getSessionUser } from '../utils/session';
+import lazyLoadProfile from '../session/lazyLoadProfile';
 
-// TODO: improve the data flow here (from login as well), where the page handles the URL nonsense
-// I want each page to be independent and pull the resources it needs
-// could set up a loader for the protected route that fetches the profile information for each
-// page...that is probably a good way to do things
-// may lead to a lot of redundant fetches...but we will optimize that later
-const loadProfile = async ({ params, isPersonal }) => {
-  const loggedInUser = getSessionUser();
+const loadProfile = async ({ params, state, dispatch, isPersonal }) => {
+  const loggedInUser = await lazyLoadProfile(state, dispatch);
+
+  if (!params.uuid) {
+    // redirect to personal profile
+    // NOTE: using the redirect react-router function in the loader was not working, so
+    // i defered this to the component
+    return { redirectTo: `/p/${loggedInUser.uuid}` };
+  }
+
   const isOwnProfile = loggedInUser.uuid === params.uuid;
 
-  if (!loggedInUser.uuid) {
-    // redirect to login
-    return redirect('/login');
-  }
   if (isPersonal && !isOwnProfile) {
     // redirect to network profile since you are not viewing your own profile
-    return redirect(`/network/p/${params.uuid}`);
+    return { redirectTo: `/network/p/${params.uuid}` };
   }
   if (!isPersonal && isOwnProfile) {
-    // redirect to network profile since you are not viewing your own profile
-    return redirect(`/p/${params.uuid}`);
+    // redirect to personal profile since you are not viewing your own profile
+    return { redirectTo: `/p/${params.uuid}` };
   }
 
   try {
@@ -36,12 +35,12 @@ const loadProfile = async ({ params, isPersonal }) => {
 
 // NOTE: not awaiting here to take advantage of defer behavior
 // https://reactrouter.com/en/main/guides/deferred
-export const loadPersonalProfileData = async ({ params }) =>
+export const loadPersonalProfileData = async ({ params, state, dispatch }) =>
   defer({
-    data: loadProfile({ params, isPersonal: true }),
+    data: loadProfile({ params, state, dispatch, isPersonal: true }),
   });
 
-export const loadNetworkProfileData = async ({ params }) =>
+export const loadNetworkProfileData = async ({ params, state, dispatch }) =>
   defer({
-    data: loadProfile({ params, isPersonal: false }),
+    data: loadProfile({ params, state, dispatch, isPersonal: false }),
   });

@@ -1,9 +1,9 @@
 import request from '../utils/request';
 
 const authService = {
-  obtainTokenPair: async (params) =>
+  login: async (params) =>
     request.post({
-      url: '/token/',
+      url: '/api_token_auth/',
       params,
     }),
 

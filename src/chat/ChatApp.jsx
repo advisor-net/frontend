@@ -1,9 +1,11 @@
-import { Button, Flex, useDisclosure } from '@chakra-ui/react';
-
-import { ChatEngine, ChatEngineContext } from 'react-chat-engine';
 import { useContext, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getSessionUser } from '../utils/session';
+import { useSelector } from 'react-redux';
+import { ChatEngine, ChatEngineContext } from 'react-chat-engine';
+
+import { Button, Flex, useDisclosure } from '@chakra-ui/react';
+import { getProfile } from '../session/sessionSlice';
+
 import ChatTermsModal from './ChatTermsModal';
 import CreateNewDirectChatModal from './CreateNewDirectChatModal';
 import ChatSettingsTop from './ChatSettingsTop';
@@ -24,9 +26,9 @@ const findChatForUsername = (chats, username) => {
 };
 
 const ChatApp = () => {
-  // need to redo this and make it have a hook to see that its changing...redux
-  const sessionUser = getSessionUser();
-  const needsModal = !(sessionUser.chatUserSecret && sessionUser.chatAgreedToTerms);
+  const profile = useSelector(getProfile);
+  const { chatUser } = profile;
+  const needsModal = !(chatUser && chatUser.agreedToTerms);
   const { isOpen: isTermsModalOpen, onClose: onCloseTermsModal } = useDisclosure({
     isOpen: needsModal,
   });
@@ -44,7 +46,7 @@ const ChatApp = () => {
       return response.results.length === 1 ? response.results[0] : null;
     };
 
-    if (chats && location.search) {
+    if (creds && chats && location.search) {
       const params = new URLSearchParams(location.search);
       const targetHandle = params.get('with');
       const existingChat = findChatForUsername(chats, targetHandle);
@@ -94,8 +96,8 @@ const ChatApp = () => {
         <ChatEngine
           height={`calc(100vh - ${HEADER_HEIGHT})`}
           projectID={process.env.REACT_APP_CHAT_ENGINE_PROJECT_ID}
-          userName={sessionUser.chatUsername}
-          userSecret={sessionUser.chatUserSecret}
+          userName={(chatUser || {}).username}
+          userSecret={(chatUser || {}).password}
           renderNewChatForm={() => renderNewDirectChatForm()}
           renderOptionsSettings={() => null}
           renderChatSettingsTop={(innerCreds, chat) => (
@@ -109,8 +111,8 @@ const ChatApp = () => {
         isOpen={isCreateNewDirectChatOpen}
         onClose={onCloseCreateNewDirectChat}
         projectID={process.env.REACT_APP_CHAT_ENGINE_PROJECT_ID}
-        userName={sessionUser.chatUsername}
-        userSecret={sessionUser.chatUserSecret}
+        userName={(chatUser || {}).username}
+        userSecret={(chatUser || {}).password}
       />
     </>
   );

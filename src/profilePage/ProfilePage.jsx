@@ -1,4 +1,6 @@
 import { Suspense, useEffect, useMemo, useState } from 'react';
+import { Await, Link, useAsyncValue, useLoaderData, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import {
   Button,
@@ -11,7 +13,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
-import { Await, Link, useAsyncValue, useLoaderData } from 'react-router-dom';
+import { getProfileUuid } from '../session/sessionSlice';
 import HandleModal, { APPLICABLE_FIELD_KEYS as HANDLE_KEYS } from './HandleModal';
 import EditUserProfileModal, {
   APPLICABLE_FIELD_KEYS as PROFILE_KEYS,
@@ -33,7 +35,6 @@ import {
   JOB_LEVEL_LABELS,
 } from '../constants/all';
 import profileService from '../services/profileService';
-import { getSessionUser } from '../utils/session';
 
 const getDisplayValueForKey = ({ user, fieldKey }) => {
   switch (fieldKey) {
@@ -163,7 +164,15 @@ const SectionHeading = ({ title, tooltipInfo, isOwnProfile, onEdit }) => (
 );
 
 const ProfilePageComponent = () => {
-  const { user: originalUser, isOwnProfile } = useAsyncValue();
+  const { user: originalUser, isOwnProfile, redirectTo } = useAsyncValue();
+  const navigate = useNavigate();
+  const profileUuid = useSelector(getProfileUuid);
+
+  useEffect(() => {
+    if (redirectTo) {
+      navigate(redirectTo);
+    }
+  }, [redirectTo, navigate]);
 
   const [user, setUser] = useState(originalUser);
 
@@ -201,20 +210,19 @@ const ProfilePageComponent = () => {
   } = useDisclosure();
 
   const handleUpdate = async (values, closeModalCallback) => {
-    const { uuid } = getSessionUser();
-    const response = await profileService.updateProfile(uuid, values);
+    const response = await profileService.updateProfile(profileUuid, values);
     setUser(response);
     closeModalCallback();
   };
 
   const handleUpdateHandle = async (values, closeModalCallback) => {
-    const { uuid } = getSessionUser();
-    const response = await profileService.updateHandle(uuid, values);
+    const response = await profileService.updateHandle(profileUuid, values);
     setUser(response);
     closeModalCallback();
   };
 
   const requiresOnboardingInitial = useMemo(() => {
+    if (!user) return false;
     for (const fieldKey of HANDLE_KEYS) {
       if (isNully(user[fieldKey])) {
         return true;
@@ -223,6 +231,7 @@ const ProfilePageComponent = () => {
     return false;
   }, [user]);
   const requiresOnboardingProfile = useMemo(() => {
+    if (!user) return false;
     for (const fieldKey of PROFILE_KEYS) {
       if (isNully(user[fieldKey])) {
         return true;
@@ -231,6 +240,7 @@ const ProfilePageComponent = () => {
     return false;
   }, [user]);
   const requiresOnboardingIncomeStatement = useMemo(() => {
+    if (!user) return false;
     for (const fieldKey of INCOME_STATEMENT_KEYS) {
       if (isNully(user[fieldKey])) {
         return true;
@@ -239,6 +249,7 @@ const ProfilePageComponent = () => {
     return false;
   }, [user]);
   const requiresOnboardingNetWorth = useMemo(() => {
+    if (!user) return false;
     for (const fieldKey of NET_WORTH_KEYS) {
       if (isNully(user[fieldKey])) {
         return true;
@@ -267,6 +278,9 @@ const ProfilePageComponent = () => {
     onOpenEditNetWorthModal,
   ]);
 
+  if (!user) {
+    return null;
+  }
   return (
     <>
       <Flex direction="column" alignItems="center" gap={4} padding={4}>

@@ -1,11 +1,21 @@
 import { createBrowserRouter } from 'react-router-dom';
+
 import { ChatEngineWrapper } from 'react-chat-engine';
-import LoginPage from '../loginPage/LoginPage';
+import UnprotectedLayout from './UnprotectedLayout';
+import SignupPage from '../signup/SignupPage';
+import PostSignup from '../login/PostSignup';
+import VerifyEmail from '../signup/VerifyEmail';
+import LoginPage from '../login/LoginPage';
+import RequestPasswordReset from '../login/RequestPasswordReset';
+import ResetPassword from '../login/ResetPassword';
+import WaitlistPage from '../login/WaitlistPage';
+
+import ProtectedLayout from './ProtectedLayout';
 import ProfilePage from '../profilePage/ProfilePage';
 import NetworkSearch from '../networkPage/NetworkSearch';
 import AccountSettings from '../accountSettings/AccountSettings';
-import ProtectedLayout from './ProtectedLayout';
 import ChatApp from '../chat/ChatApp';
+
 import ErrorPage from './ErrorPage';
 import NoMatch from './NoMatch';
 
@@ -24,9 +34,36 @@ const getRouter = (store) => {
   const { dispatch, getState } = store;
   const router = createBrowserRouter([
     {
-      path: '/login',
-      element: <LoginPage />,
+      path: '/',
+      element: <UnprotectedLayout />,
       errorElement: <ErrorPage />,
+      children: [
+        {
+          path: '/login',
+          element: <LoginPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: '/request_password_reset',
+          element: <RequestPasswordReset />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: '/reset_password/:resetPasswordLink',
+          element: <ResetPassword />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: '/waitlist',
+          element: <WaitlistPage />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: '/signup/:signupLinkUuid',
+          element: <SignupPage />,
+          errorElement: <ErrorPage />,
+        },
+      ],
     },
     {
       path: '/',
@@ -77,6 +114,18 @@ const getRouter = (store) => {
               <ChatApp />
             </ChatEngineWrapper>
           ),
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: '/verify_email/:verifyLinkUuid',
+          loader: () => lazyLoadProfile(getState(), dispatch),
+          element: <VerifyEmail />,
+          errorElement: <ErrorPage />,
+        },
+        {
+          path: '/post_signup',
+          loader: () => lazyLoadProfile(getState(), dispatch),
+          element: <PostSignup />,
           errorElement: <ErrorPage />,
         },
         {

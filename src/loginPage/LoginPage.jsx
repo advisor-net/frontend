@@ -21,12 +21,6 @@ import StringInputFormComponent from '../components/forms/StringInputFormCompone
 
 import Logo from '../layout/Logo';
 
-const LoginSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email').required('Required'),
-  password: Yup.string().required('Required'),
-});
-
-// ToDo: add unable to login with credential async error handling
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -53,6 +47,36 @@ const LoginPage = () => {
     navigate(useFrom, { replace: true });
   };
 
+  // NOTE: doing this manually because we need async validation to check credentials
+  const validate = async (values) => {
+    const errors = {};
+    const emailSchema = Yup.string().email('Invalid email').required('Required');
+    try {
+      await emailSchema.validate(values.email);
+    } catch (e) {
+      [errors.email] = e.errors;
+      return errors;
+    }
+
+    const passwordSchema = Yup.string().required('Required');
+    try {
+      await passwordSchema.validate(values.password);
+    } catch (e) {
+      [errors.password] = e.errors;
+      return errors;
+    }
+
+    try {
+      await authService.login({
+        username: values.email,
+        password: values.password,
+      });
+    } catch (e) {
+      errors.password = e.message || e.originalResponse?.nonFieldErrors?.[0] || 'Unknown error';
+    }
+    return errors;
+  };
+
   return (
     <>
       <Box background="gray.100" paddingX={4}>
@@ -70,8 +94,10 @@ const LoginPage = () => {
               email: '',
               password: '',
             }}
-            validationSchema={LoginSchema}
+            validateOnChange={false}
+            validateOnBlur={false}
             validateOnMount={false}
+            validate={validate}
             onSubmit={async (values) => {
               await signinWithCredentials({
                 username: values.email,
@@ -93,7 +119,6 @@ const LoginPage = () => {
                           {...field}
                           onChange={(val) => form.setFieldValue(field.name, val)}
                           autoFocus="autofocus"
-                          type="email"
                           variant="filled"
                         />
                         <FormErrorMessage>{form.errors[field.name]}</FormErrorMessage>
@@ -117,7 +142,7 @@ const LoginPage = () => {
                       </FormControl>
                     )}
                   </Field>
-                  <Button type="submit" colorScheme="teal" width="full" isLoading={isSubmitting}>
+                  <Button type="submit" colorScheme="teal" width="full" isLoading={isSubmitting} formNoValidate>
                     Login
                   </Button>
                 </VStack>

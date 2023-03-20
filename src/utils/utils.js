@@ -211,9 +211,11 @@ export const startsWithNumber = (s) => {
 export const isNully = (v) => v === null || v === undefined;
 
 export const getErrorMessageForFields = (e, fields) => {
+  const { originalResponse } = e;
+  if (!originalResponse) return null;
   for (const field of fields) {
-    if (e.originalResponse?.[field]?.[0]) {
-      return e.originalResponse?.[field]?.[0];
+    if (originalResponse[field]?.[0]) {
+      return originalResponse[field]?.[0];
     }
   }
   return null;

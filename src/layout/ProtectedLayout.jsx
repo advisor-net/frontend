@@ -16,6 +16,7 @@ import { removeToken } from '../session/token';
 import Logo from './Logo';
 import { HEADER_HEIGHT } from '../constants/all';
 import { getProfileUuid } from '../session/sessionSlice';
+import authService from '../services/authService';
 
 const ProtectedLayout = () => {
   const profileUuid = useSelector(getProfileUuid);
@@ -27,6 +28,7 @@ const ProtectedLayout = () => {
   };
 
   const signout = async () => {
+    await authService.logout();
     removeToken();
     navigate('/login');
   };

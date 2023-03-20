@@ -67,7 +67,7 @@ const SignupPage = () => {
               setFieldError(
                 'password',
                 e.message ||
-                  getErrorMessageForFields(e, 'nonFieldErrors', 'email', 'password') ||
+                  getErrorMessageForFields(e, ['nonFieldErrors', 'email', 'password']) ||
                   'Unknown error'
               );
             }

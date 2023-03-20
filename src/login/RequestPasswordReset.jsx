@@ -43,7 +43,7 @@ const RequestPasswordReset = () => {
               setFieldError(
                 'email',
                 e.message ||
-                  getErrorMessageForFields(e, 'nonFieldErrors', 'email') ||
+                  getErrorMessageForFields(e, ['nonFieldErrors', 'email']) ||
                   'Unknown error'
               );
             }

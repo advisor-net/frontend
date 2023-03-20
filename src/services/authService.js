@@ -7,6 +7,11 @@ const authService = {
       params,
     }),
 
+  logout: async () =>
+    request.delete({
+      url: '/logout/',
+    }),
+
   getProfile: async () =>
     request.get({
       url: '/profile/',
@@ -45,6 +50,12 @@ const authService = {
   joinWaitlist: async (params) =>
     request.post({
       url: '/waitlist/',
+      params,
+    }),
+
+  changePassword: async (params) =>
+    request.post({
+      url: '/change_password/',
       params,
     }),
 };

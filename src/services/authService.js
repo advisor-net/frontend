@@ -41,6 +41,12 @@ const authService = {
       url: '/resend_email_verification/',
       params,
     }),
+
+  joinWaitlist: async (params) =>
+    request.post({
+      url: '/waitlist/',
+      params,
+    }),
 };
 
 export default authService;

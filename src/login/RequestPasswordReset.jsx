@@ -26,7 +26,7 @@ const RequestPasswordReset = () => {
   return (
     <Flex alignItems="center" justifyContent="center" direction="column" padding={4}>
       <Heading>Request password reset link</Heading>
-      <Box bg="white" p={6} rounded="md" w={64}>
+      <Box bg="white" p={6} rounded="md" width="600px">
         <Formik
           initialValues={{
             email: '',

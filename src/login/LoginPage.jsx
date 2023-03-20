@@ -54,7 +54,7 @@ const LoginPage = () => {
   return (
     <Flex alignItems="center" justifyContent="center" direction="column" padding={4}>
       <Heading>Login</Heading>
-      <Box bg="white" p={6} rounded="md" w={64}>
+      <Box bg="white" p={6} rounded="md" width="600px">
         <Formik
           initialValues={{
             email: '',
@@ -128,6 +128,9 @@ const LoginPage = () => {
                 </Button>
                 <Link alignSelf="center" as={RRLink} to="/request_password_reset" color="teal">
                   Forgot Password?
+                </Link>
+                <Link alignSelf="center" as={RRLink} to="/waitlist" color="teal">
+                  Don&apos;t have an account? Join our waitlist!
                 </Link>
               </VStack>
             </Form>

@@ -31,3 +31,4 @@ const getScope = (state) => state.session;
 export const getProfile = (state) => getScope(state).profile;
 
 export const getProfileUuid = (state) => (getScope(state).profile || {}).uuid;
+export const getEmailVerified = (state) => (getScope(state).profile || {}).emailVerified;

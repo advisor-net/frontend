@@ -8,8 +8,8 @@ import {
   FormLabel,
   Heading,
   Text,
-  VStack,
   Textarea,
+  VStack,
 } from '@chakra-ui/react';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -43,12 +43,20 @@ const WaitlistPage = () => {
           onSubmit={async (values, { setFieldError }) => {
             try {
               await authService.joinWaitlist(values);
-              setSuccessMessage('Congratulations! You are on the waitlist. We will email you when things are ready!');
+              setSuccessMessage(
+                'Congratulations! You are on the waitlist. We will email you when things are ready!'
+              );
             } catch (e) {
               setFieldError(
                 'whyDoYouWantToJoin',
                 e.message ||
-                  getErrorMessageForFields(e, 'nonFieldErrors', 'email', 'howDidYouHearAboutUs', 'whyDoYouWantToJoin') ||
+                  getErrorMessageForFields(
+                    e,
+                    'nonFieldErrors',
+                    'email',
+                    'howDidYouHearAboutUs',
+                    'whyDoYouWantToJoin'
+                  ) ||
                   'Unknown error'
               );
             }

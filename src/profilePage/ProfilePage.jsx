@@ -221,6 +221,11 @@ const ProfilePageComponent = () => {
     closeModalCallback();
   };
 
+  const requiresEmailVerification = useMemo(() => {
+    if (!user) return false;
+    if (!user.emailVerified) return true;
+    return false;
+  }, [user]);
   const requiresOnboardingInitial = useMemo(() => {
     if (!user) return false;
     for (const fieldKey of HANDLE_KEYS) {
@@ -260,7 +265,8 @@ const ProfilePageComponent = () => {
 
   useEffect(() => {
     if (isOwnProfile) {
-      if (requiresOnboardingInitial) onOpenHandleModal();
+      if (requiresEmailVerification) navigate('/post_signup');
+      else if (requiresOnboardingInitial) onOpenHandleModal();
       else if (requiresOnboardingProfile) onOpenEditUserProfileModal();
       else if (requiresOnboardingIncomeStatement) onOpenEditIncomeStatementModal();
       else if (requiresOnboardingNetWorth) onOpenEditNetWorthModal();
@@ -272,10 +278,12 @@ const ProfilePageComponent = () => {
     requiresOnboardingProfile,
     requiresOnboardingIncomeStatement,
     requiresOnboardingNetWorth,
+    requiresEmailVerification,
     onOpenHandleModal,
     onOpenEditUserProfileModal,
     onOpenEditIncomeStatementModal,
     onOpenEditNetWorthModal,
+    navigate,
   ]);
 
   if (!user) {

@@ -66,6 +66,7 @@ const getRouter = (store) => {
       ],
     },
     {
+      // TODO: force a redirect to email verification if the user is not verified
       path: '/',
       element: <ProtectedLayout />,
       errorElement: <ErrorPage />,

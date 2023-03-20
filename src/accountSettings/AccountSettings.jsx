@@ -27,7 +27,9 @@ const AccountSettings = () => {
   return (
     <Flex alignItems="flex-start" justifyContent="center" direction="column" padding={4}>
       <Heading>Account settings</Heading>
-      <Heading fontSize="lg" marginTop={4}>Change password</Heading>
+      <Heading fontSize="lg" marginTop={4}>
+        Change password
+      </Heading>
       <Box bg="white" paddingTop={4} rounded="md" width="600px">
         <Formik
           initialValues={{
@@ -45,8 +47,13 @@ const AccountSettings = () => {
             } catch (e) {
               setFieldError(
                 'newPassword',
-                e.message || e.originalResponse?.[0] ||
-                  getErrorMessageForFields(e, ['nonFieldErrors', 'currentPassword', 'newPassword']) ||
+                e.message ||
+                  e.originalResponse?.[0] ||
+                  getErrorMessageForFields(e, [
+                    'nonFieldErrors',
+                    'currentPassword',
+                    'newPassword',
+                  ]) ||
                   'Unknown error'
               );
             }

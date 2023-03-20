@@ -50,13 +50,12 @@ const WaitlistPage = () => {
               setFieldError(
                 'whyDoYouWantToJoin',
                 e.message ||
-                  getErrorMessageForFields(
-                    e,
-                    ['nonFieldErrors',
+                  getErrorMessageForFields(e, [
+                    'nonFieldErrors',
                     'email',
                     'howDidYouHearAboutUs',
-                    'whyDoYouWantToJoin']
-                  ) ||
+                    'whyDoYouWantToJoin',
+                  ]) ||
                   'Unknown error'
               );
             }

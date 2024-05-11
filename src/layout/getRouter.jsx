@@ -63,6 +63,14 @@ const getRouter = (store) => {
           element: <SignupPage />,
           errorElement: <ErrorPage />,
         },
+        {
+          path: '*',
+          element: <NoMatch />,
+        },
+        {
+          path: '',
+          element: <NoMatch />,
+        },
       ],
     },
     {
@@ -133,10 +141,18 @@ const getRouter = (store) => {
           path: '*',
           element: <NoMatch />,
         },
+        {
+          path: '',
+          element: <NoMatch />,
+        },
       ],
     },
     {
       path: '*',
+      element: <NoMatch />,
+    },
+    {
+      path: '',
       element: <NoMatch />,
     },
   ]);

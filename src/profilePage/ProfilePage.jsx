@@ -223,6 +223,7 @@ const ProfilePageComponent = () => {
 
   const requiresEmailVerification = useMemo(() => {
     if (!user) return false;
+    if (user.isSuperuser) return false;
     if (!user.emailVerified) return true;
     return false;
   }, [user]);
